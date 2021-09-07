@@ -1,15 +1,13 @@
-/* eslint-disable @typescript-eslint/require-await */
-
 import type {Plugin} from 'onecmd';
+import {serializeJson} from './util/serialize-json';
 
 export const babel = (): Plugin => ({
   sources: [
     {
-      type: 'json',
+      type: 'object',
       path: '.babelrc.json',
-      generate: async () => ({
-        presets: [['@babel/env', {targets: {node: 'current'}}]],
-      }),
+      generate: () => ({}),
+      serialize: serializeJson,
     },
   ],
 });

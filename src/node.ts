@@ -1,14 +1,25 @@
-/* eslint-disable @typescript-eslint/require-await */
-
+import deepmerge from 'deepmerge';
 import type {Plugin} from 'onecmd';
+import {serializeText} from './util/serialize-text';
 
 export const node = (version: string): Plugin => ({
   sources: [
     {
-      type: 'text',
+      type: 'string',
       path: '.node-version',
-      versioned: true,
-      generate: async () => [version],
+      generate: () => version,
+      serialize: serializeText,
+    },
+  ],
+  dependencies: [
+    {
+      type: 'object',
+      path: '.babelrc.json',
+
+      generate: (input) =>
+        deepmerge(input, {
+          presets: [['@babel/env', {targets: {node: version}}]],
+        }),
     },
   ],
 });

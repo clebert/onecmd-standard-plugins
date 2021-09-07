@@ -1,16 +1,15 @@
-/* eslint-disable @typescript-eslint/require-await */
-
 import deepmerge from 'deepmerge';
 import type {Plugin} from 'onecmd';
+import {serializeText} from './util/serialize-text';
 
 export const editorconfig = (): Plugin => ({
   sources: [
     {
-      type: 'text',
+      type: 'string',
       path: '.editorconfig',
 
-      async generate() {
-        return [
+      generate: () =>
+        [
           'root = true',
           '[*]',
           'charset = utf-8',
@@ -19,20 +18,20 @@ export const editorconfig = (): Plugin => ({
           'indent_style = space',
           'insert_final_newline = true',
           'trim_trailing_whitespace = true',
-        ];
-      },
+        ].join('\n'),
+
+      serialize: serializeText,
     },
   ],
   dependencies: [
     {
-      type: 'json',
+      type: 'object',
       path: '.vscode/extensions.json',
 
-      async generate(input) {
-        return deepmerge(input, {
+      generate: (input) =>
+        deepmerge(input, {
           recommendations: ['editorconfig.editorconfig'],
-        });
-      },
+        }),
     },
   ],
 });

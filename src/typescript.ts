@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/require-await */
-
 import {dirname, resolve} from 'path';
 import deepmerge from 'deepmerge';
 import type {Plugin} from 'onecmd';
+import {serializeJson} from './util/serialize-json';
 
 export const typescript = (
-  arch: 'node' | 'preact' | 'react' | 'web',
+  arch: 'node' | 'web',
   dist: 'bundle' | 'package'
 ): Plugin => ({
   commands: [
@@ -14,15 +13,13 @@ export const typescript = (
           type: 'compile',
           path: resolve(dirname(require.resolve('typescript')), '../bin/tsc'),
 
-          getArgs({watch}) {
-            return [
-              '--project',
-              'tsconfig.cjs.json',
-              '--incremental',
-              '--pretty',
-              watch ? '--watch' : undefined,
-            ];
-          },
+          getArgs: ({watch}) => [
+            '--project',
+            'tsconfig.cjs.json',
+            '--incremental',
+            '--pretty',
+            watch ? '--watch' : undefined,
+          ],
         }
       : undefined,
 
@@ -31,23 +28,22 @@ export const typescript = (
           type: 'compile',
           path: resolve(dirname(require.resolve('typescript')), '../bin/tsc'),
 
-          getArgs({watch}) {
-            return [
-              '--project',
-              'tsconfig.esm.json',
-              '--incremental',
-              '--pretty',
-              watch ? '--watch' : undefined,
-            ];
-          },
+          getArgs: ({watch}) => [
+            '--project',
+            'tsconfig.esm.json',
+            '--incremental',
+            '--pretty',
+            watch ? '--watch' : undefined,
+          ],
         }
       : undefined,
   ],
   sources: [
     {
-      type: 'json',
+      type: 'object',
       path: 'tsconfig.json',
-      generate: async () => ({
+
+      generate: () => ({
         compilerOptions: {
           // Type Checking
           allowUnreachableCode: false,
@@ -77,65 +73,59 @@ export const typescript = (
           isolatedModules: true,
 
           // Language and Environment
-          jsx:
-            arch === 'preact'
-              ? 'react-jsx'
-              : arch === 'react'
-              ? arch
-              : undefined,
-
-          jsxImportSource: arch === 'preact' ? arch : undefined,
           lib: arch === 'node' ? ['ES2017'] : ['DOM', 'ES2017'],
           target: 'ES2017',
         },
         include: ['src/**/*.ts', 'src/**/*.tsx', '*.js'],
       }),
+
+      serialize: serializeJson,
     },
 
-    dist === 'package' ? {type: 'artifact', path: 'lib'} : undefined,
+    dist === 'package' ? {type: 'unknown', path: 'lib'} : undefined,
 
     dist === 'package'
       ? {
-          type: 'json',
+          type: 'object',
           path: 'tsconfig.cjs.json',
 
-          generate: async () => ({
+          generate: () => ({
             compilerOptions: {module: 'CommonJS', outDir: 'lib/cjs'},
             extends: './tsconfig.json',
           }),
+
+          serialize: serializeJson,
         }
       : undefined,
 
     dist === 'package'
       ? {
-          type: 'json',
+          type: 'object',
           path: 'tsconfig.esm.json',
 
-          generate: async () => ({
+          generate: () => ({
             compilerOptions: {outDir: 'lib/esm'},
             extends: './tsconfig.json',
           }),
+
+          serialize: serializeJson,
         }
       : undefined,
   ],
   dependencies: [
     {
-      type: 'json',
+      type: 'object',
       path: '.vscode/settings.json',
 
-      async generate(input) {
-        return deepmerge(input, {
-          'typescript.tsdk': 'node_modules/typescript/lib',
-        });
-      },
+      generate: (input) =>
+        deepmerge(input, {'typescript.tsdk': 'node_modules/typescript/lib'}),
     },
-
     {
-      type: 'json',
+      type: 'object',
       path: '.eslintrc.json',
 
-      async generate(input) {
-        return deepmerge(
+      generate: (input) =>
+        deepmerge(
           deepmerge(input, {
             parser: '@typescript-eslint/parser',
             parserOptions: {project: 'tsconfig.json'},
@@ -151,17 +141,12 @@ export const typescript = (
             },
           },
           {arrayMerge: (_, source) => source}
-        );
-      },
+        ),
     },
-
     {
-      type: 'json',
+      type: 'object',
       path: '.babelrc.json',
-
-      async generate(input) {
-        return deepmerge(input, {presets: ['@babel/typescript']});
-      },
+      generate: (input) => deepmerge(input, {presets: ['@babel/typescript']}),
     },
   ],
 });

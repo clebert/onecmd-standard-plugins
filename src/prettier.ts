@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/require-await */
-
 import {dirname, resolve} from 'path';
 import deepmerge from 'deepmerge';
 import type {Plugin} from 'onecmd';
+import {serializeJson} from './util/serialize-json';
+import {serializeText} from './util/serialize-text';
 
 export const prettier = (): Plugin => ({
   commands: [
@@ -10,78 +10,63 @@ export const prettier = (): Plugin => ({
       type: 'fmt',
       path: resolve(dirname(require.resolve('prettier')), 'bin-prettier.js'),
 
-      getArgs({check}) {
-        return [
-          check ? '--list-different' : '--write',
-          '**/*.{html,js,json,md,ts,tsx,yml}',
-        ];
-      },
+      getArgs: ({check}) => [
+        check ? '--list-different' : '--write',
+        '**/*.{html,js,json,md,ts,tsx,yml}',
+      ],
     },
   ],
   sources: [
     {
-      type: 'text',
+      type: 'string',
       path: '.prettierignore',
-
-      async generate(otherSources) {
-        return Object.keys(otherSources);
-      },
+      generate: (otherSources) => Object.keys(otherSources).join('\n'),
+      serialize: serializeText,
     },
-
     {
-      type: 'json',
+      type: 'object',
       path: '.prettierrc.json',
 
-      async generate() {
-        return {
-          bracketSpacing: false,
-          printWidth: 80,
-          proseWrap: 'always',
-          quoteProps: 'consistent',
-          singleQuote: true,
-        };
-      },
+      generate: () => ({
+        bracketSpacing: false,
+        printWidth: 80,
+        proseWrap: 'always',
+        quoteProps: 'consistent',
+        singleQuote: true,
+      }),
+
+      serialize: serializeJson,
     },
   ],
   dependencies: [
     {
-      type: 'json',
+      type: 'object',
       path: '.vscode/extensions.json',
 
-      async generate(input) {
-        return deepmerge(input, {recommendations: ['esbenp.prettier-vscode']});
-      },
+      generate: (input) =>
+        deepmerge(input, {recommendations: ['esbenp.prettier-vscode']}),
     },
-
     {
-      type: 'json',
+      type: 'object',
       path: '.vscode/settings.json',
-
-      async generate(input) {
-        return deepmerge(input, {'editor.formatOnSave': true});
-      },
+      generate: (input) => deepmerge(input, {'editor.formatOnSave': true}),
     },
-
     {
-      type: 'json',
+      type: 'object',
       path: '.eslintrc.json',
-
-      async generate(input) {
-        return deepmerge(input, {extends: ['prettier']});
-      },
+      generate: (input) => deepmerge(input, {extends: ['prettier']}),
     },
-
     {
-      type: 'text',
+      type: 'string',
       path: '.editorconfig',
 
-      async generate(input) {
-        return deepmerge(input, [
+      generate: (input) =>
+        [
+          ...input.split('\n'),
           '[*.{html,js,json,md,ts,tsx,yml}]',
           'insert_final_newline = false',
           'trim_trailing_whitespace = false',
-        ]);
-      },
+        ].join('\n'),
     },
   ],
 });

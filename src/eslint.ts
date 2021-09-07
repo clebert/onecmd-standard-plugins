@@ -1,61 +1,57 @@
-/* eslint-disable @typescript-eslint/require-await */
-
 import {dirname, resolve} from 'path';
 import deepmerge from 'deepmerge';
 import type {Plugin} from 'onecmd';
+import {serializeJson} from './util/serialize-json';
+import {serializeText} from './util/serialize-text';
 
 export const eslint = (): Plugin => ({
   commands: [
     {
       type: 'lint',
       path: resolve(dirname(require.resolve('eslint')), '../bin/eslint.js'),
-
-      getArgs({fix}) {
-        return ['**/*', fix ? '--fix' : undefined];
-      },
+      getArgs: ({fix}) => ['**/*', fix ? '--fix' : undefined],
     },
   ],
   sources: [
     {
-      type: 'text',
+      type: 'string',
       path: '.eslintignore',
 
-      async generate(otherSources) {
-        return ['**/*.md', ...Object.keys(otherSources)];
-      },
-    },
+      generate: (otherSources) =>
+        ['**/*.md', ...Object.keys(otherSources)].join('\n'),
 
+      serialize: serializeText,
+    },
     {
-      type: 'json',
+      type: 'object',
       path: '.eslintrc.json',
 
-      async generate() {
-        return {
-          plugins: ['eslint-plugin-import'],
-          rules: {
-            'import/no-extraneous-dependencies': 'error',
-            'import/order': [
-              'error',
-              {
-                'alphabetize': {order: 'asc'},
-                'newlines-between': 'never',
-                'warnOnUnassignedImports': true,
-              },
-            ],
-            'no-shadow': 'error',
-          },
-        };
-      },
+      generate: () => ({
+        plugins: ['eslint-plugin-import'],
+        rules: {
+          'import/no-extraneous-dependencies': 'error',
+          'import/order': [
+            'error',
+            {
+              'alphabetize': {order: 'asc'},
+              'newlines-between': 'never',
+              'warnOnUnassignedImports': true,
+            },
+          ],
+          'no-shadow': 'error',
+        },
+      }),
+
+      serialize: serializeJson,
     },
   ],
   dependencies: [
     {
-      type: 'json',
+      type: 'object',
       path: '.vscode/extensions.json',
 
-      async generate(input) {
-        return deepmerge(input, {recommendations: ['dbaeumer.vscode-eslint']});
-      },
+      generate: (input) =>
+        deepmerge(input, {recommendations: ['dbaeumer.vscode-eslint']}),
     },
   ],
 });

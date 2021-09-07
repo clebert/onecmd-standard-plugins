@@ -5,6 +5,8 @@ export * from './git';
 export * from './jest';
 export * from './node';
 export * from './npm';
+export * from './preact';
 export * from './prettier';
+export * from './react';
 export * from './typescript';
 export * from './vscode';

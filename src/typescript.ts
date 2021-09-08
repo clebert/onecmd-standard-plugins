@@ -3,15 +3,32 @@ import deepmerge from 'deepmerge';
 import type {Plugin} from 'onecmd';
 import {serializeJson} from './util/serialize-json';
 
+const tscPath = resolve(dirname(require.resolve('typescript')), '../bin/tsc');
+
 export const typescript = (
   arch: 'node' | 'web',
   dist: 'bundle' | 'package'
 ): Plugin => ({
   commands: [
+    dist === 'bundle'
+      ? {
+          type: 'compile',
+          path: tscPath,
+
+          getArgs: ({watch}) => [
+            '--project',
+            'tsconfig.json',
+            '--noEmit',
+            '--pretty',
+            watch ? '--watch' : undefined,
+          ],
+        }
+      : undefined,
+
     dist === 'package'
       ? {
           type: 'compile',
-          path: resolve(dirname(require.resolve('typescript')), '../bin/tsc'),
+          path: tscPath,
 
           getArgs: ({watch}) => [
             '--project',
@@ -26,7 +43,7 @@ export const typescript = (
     dist === 'package'
       ? {
           type: 'compile',
-          path: resolve(dirname(require.resolve('typescript')), '../bin/tsc'),
+          path: tscPath,
 
           getArgs: ({watch}) => [
             '--project',

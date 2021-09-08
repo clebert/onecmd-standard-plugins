@@ -4,11 +4,13 @@ import {serializeYaml} from './util/serialize-yaml';
 export interface GithubPluginOptions {
   readonly branches?: readonly string[];
   readonly nodeVersion?: string;
+  readonly omitReleaseStep?: boolean;
 }
 
 export const github = ({
   branches = ['main'],
   nodeVersion,
+  omitReleaseStep = false,
 }: GithubPluginOptions = {}): Plugin => ({
   sources: [
     {
@@ -21,7 +23,7 @@ export const github = ({
         on: {
           push: {branches},
           pull_request: {branches},
-          release: {types: ['published']},
+          ...(!omitReleaseStep ? {release: {types: ['published']}} : {}),
         },
         jobs: {
           ci: {
@@ -35,12 +37,16 @@ export const github = ({
               },
               {name: 'Install dependencies', uses: 'bahmutov/npm-install@v1'},
               {name: 'Run CI checks', run: 'npm run ci'},
-              {
-                name: 'Publish to npm',
-                if: "${{ github.event_name == 'release' }}",
-                env: {NPM_AUTH_TOKEN: '${{ secrets.NPM_AUTH_TOKEN }}'},
-                run: 'npm config set //registry.npmjs.org/:_authToken $NPM_AUTH_TOKEN\nnpm publish\n',
-              },
+              ...(!omitReleaseStep
+                ? [
+                    {
+                      name: 'Publish to npm',
+                      if: "${{ github.event_name == 'release' }}",
+                      env: {NPM_AUTH_TOKEN: '${{ secrets.NPM_AUTH_TOKEN }}'},
+                      run: 'npm config set //registry.npmjs.org/:_authToken $NPM_AUTH_TOKEN\nnpm publish\n',
+                    },
+                  ]
+                : []),
             ],
           },
         },

@@ -2,6 +2,7 @@ export * from './babel';
 export * from './editorconfig';
 export * from './eslint';
 export * from './git';
+export * from './github';
 export * from './jest';
 export * from './node';
 export * from './npm';

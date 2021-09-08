@@ -5,12 +5,14 @@ export interface GithubPluginOptions {
   readonly branches?: readonly string[];
   readonly nodeVersion?: string;
   readonly omitReleaseStep?: boolean;
+  readonly runner?: string;
 }
 
 export const github = ({
   branches = ['main'],
   nodeVersion,
   omitReleaseStep = false,
+  runner = 'ubuntu-latest',
 }: GithubPluginOptions = {}): Plugin => ({
   sources: [
     {
@@ -27,7 +29,7 @@ export const github = ({
         },
         jobs: {
           ci: {
-            'runs-on': 'ubuntu-latest',
+            'runs-on': runner,
             'steps': [
               {name: 'Checkout repository', uses: 'actions/checkout@v2'},
               {

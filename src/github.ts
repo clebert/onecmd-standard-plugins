@@ -2,10 +2,14 @@ import type {Plugin} from 'onecmd';
 import {serializeYaml} from './util/serialize-yaml';
 
 export interface GithubPluginOptions {
+  readonly branches?: readonly string[];
   readonly nodeVersion?: string;
 }
 
-export const github = ({nodeVersion}: GithubPluginOptions = {}): Plugin => ({
+export const github = ({
+  branches = ['main'],
+  nodeVersion,
+}: GithubPluginOptions = {}): Plugin => ({
   sources: [
     {
       type: 'object',
@@ -15,8 +19,8 @@ export const github = ({nodeVersion}: GithubPluginOptions = {}): Plugin => ({
       generate: () => ({
         name: 'CI',
         on: {
-          push: {branches: ['main']},
-          pull_request: {branches: ['main']},
+          push: {branches},
+          pull_request: {branches},
           release: {types: ['published']},
         },
         jobs: {

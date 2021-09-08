@@ -9,17 +9,14 @@ export const eslint = (): Plugin => ({
     {
       type: 'lint',
       path: resolve(dirname(require.resolve('eslint')), '../bin/eslint.js'),
-      getArgs: ({fix}) => ['**/*', fix ? '--fix' : undefined],
+      getArgs: ({fix}) => ['**/*.{js,jsx,ts,tsx}', fix ? '--fix' : undefined],
     },
   ],
   sources: [
     {
       type: 'string',
       path: '.eslintignore',
-
-      generate: (otherSources) =>
-        ['**/*.md', ...Object.keys(otherSources)].join('\n'),
-
+      generate: (otherSources) => Object.keys(otherSources).join('\n'),
       serialize: serializeText,
     },
     {

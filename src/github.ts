@@ -18,7 +18,7 @@ export const github = ({
     {
       type: 'object',
       path: '.github/workflows/ci.yml',
-      versioned: true,
+      versionable: true,
 
       generate: () => ({
         name: 'CI',

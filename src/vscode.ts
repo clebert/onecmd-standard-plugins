@@ -22,9 +22,9 @@ export const vscode = ({
 
       generate: (otherSources) => ({
         'files.exclude': Object.entries(otherSources).reduce(
-          (exclude, [path, {versioned}]) => ({
+          (exclude, [path, {editable, versionable}]) => ({
             ...exclude,
-            [path]: !showFilesInEditor && !versioned,
+            [path]: !showFilesInEditor && !editable && !versionable,
           }),
           {'**/.DS_Store': true, '**/.git': true} as Record<string, boolean>
         ),

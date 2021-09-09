@@ -37,7 +37,7 @@ function babel(): Plugin;
 function editorconfig(): Plugin;
 ```
 
-- Source file `.editorconfig` of type `object`
+- Source file `.editorconfig` of type `object` _(string array)_
 - Optional dependency file `.vscode/extensions.json` of type `object`
 
 ### eslint
@@ -47,7 +47,7 @@ function eslint(): Plugin;
 ```
 
 - **Command** of type `lint`
-- Source file `.eslintignore` of type `object`
+- Source file `.eslintignore` of type `object` _(string array)_
 - Source file `.eslintrc.json` of type `object`
 - Optional dependency file `.vscode/extensions.json` of type `object`
 
@@ -57,7 +57,7 @@ function eslint(): Plugin;
 function git(): Plugin;
 ```
 
-- Versioned source file `.gitignore` of type `object`
+- Versionable source file `.gitignore` of type `object` _(string array)_
 
 ### github
 
@@ -70,7 +70,7 @@ function github({
 }?: GithubPluginOptions): Plugin;
 ```
 
-- Versioned source file `.github/workflows/ci.yml` of type `object`
+- Versionable source file `.github/workflows/ci.yml` of type `object`
 
 ### jest
 
@@ -98,8 +98,8 @@ function npm(): Plugin;
 ```
 
 - Source file `node_modules` of type `unknown`
-- Versioned source file `package-lock.json` of type `unknown`
-- Versioned source file `package.json` of type `unknown`
+- Versionable source file `package-lock.json` of type `unknown`
+- Versionable source file `package.json` of type `unknown`
 
 ### preact
 
@@ -116,7 +116,7 @@ function prettier(): Plugin;
 ```
 
 - **Command** of type `fmt`
-- Source file `.prettierignore` of type `object`
+- Source file `.prettierignore` of type `object` _(string array)_
 - Source file `.prettierrc.json` of type `object`
 - Optional dependency file `.vscode/extensions.json` of type `object`
 - Optional dependency file `.vscode/settings.json` of type `object`

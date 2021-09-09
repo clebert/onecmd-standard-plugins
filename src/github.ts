@@ -10,7 +10,7 @@ export interface GithubPluginOptions {
 
 export const github = ({
   branches = ['main'],
-  nodeVersion,
+  nodeVersion = undefined,
   omitReleaseStep = false,
   runner = 'ubuntu-latest',
 }: GithubPluginOptions = {}): Plugin => ({

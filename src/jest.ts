@@ -6,7 +6,7 @@ export interface JestPluginOptions {
   readonly coverage?: boolean;
 }
 
-export const jest = ({coverage}: JestPluginOptions = {}): Plugin => ({
+export const jest = ({coverage = false}: JestPluginOptions = {}): Plugin => ({
   commands: [
     {
       type: 'test',

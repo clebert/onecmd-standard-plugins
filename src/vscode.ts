@@ -6,7 +6,7 @@ export interface VscodePluginOptions {
 }
 
 export const vscode = ({
-  showFilesInEditor,
+  showFilesInEditor = false,
 }: VscodePluginOptions = {}): Plugin => ({
   sources: [
     {type: 'unknown', path: '.vscode'},

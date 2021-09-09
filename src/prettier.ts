@@ -2,7 +2,7 @@ import {dirname, resolve} from 'path';
 import deepmerge from 'deepmerge';
 import type {Plugin} from 'onecmd';
 import {serializeJson} from './util/serialize-json';
-import {serializeText} from './util/serialize-text';
+import {serializeLines} from './util/serialize-lines';
 
 export const prettier = (): Plugin => ({
   commands: [
@@ -18,10 +18,10 @@ export const prettier = (): Plugin => ({
   ],
   sources: [
     {
-      type: 'string',
+      type: 'object',
       path: '.prettierignore',
-      generate: (otherSources) => Object.keys(otherSources).join('\n'),
-      serialize: serializeText,
+      generate: (otherSources) => Object.keys(otherSources),
+      serialize: serializeLines,
     },
     {
       type: 'object',
@@ -57,16 +57,15 @@ export const prettier = (): Plugin => ({
       generate: (input) => deepmerge(input, {extends: ['prettier']}),
     },
     {
-      type: 'string',
+      type: 'object',
       path: '.editorconfig',
 
-      generate: (input) =>
-        [
-          ...input.split('\n'),
-          '[*.{html,js,json,md,ts,tsx,yml}]',
-          'insert_final_newline = false',
-          'trim_trailing_whitespace = false',
-        ].join('\n'),
+      generate: (input) => [
+        ...(input as string[]),
+        '[*.{html,js,json,md,ts,tsx,yml}]',
+        'insert_final_newline = false',
+        'trim_trailing_whitespace = false',
+      ],
     },
   ],
 });

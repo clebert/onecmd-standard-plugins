@@ -2,7 +2,7 @@ import {dirname, resolve} from 'path';
 import deepmerge from 'deepmerge';
 import type {Plugin} from 'onecmd';
 import {serializeJson} from './util/serialize-json';
-import {serializeText} from './util/serialize-text';
+import {serializeLines} from './util/serialize-lines';
 
 export const eslint = (): Plugin => ({
   commands: [
@@ -14,10 +14,10 @@ export const eslint = (): Plugin => ({
   ],
   sources: [
     {
-      type: 'string',
+      type: 'object',
       path: '.eslintignore',
-      generate: (otherSources) => Object.keys(otherSources).join('\n'),
-      serialize: serializeText,
+      generate: (otherSources) => Object.keys(otherSources),
+      serialize: serializeLines,
     },
     {
       type: 'object',

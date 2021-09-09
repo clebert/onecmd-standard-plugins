@@ -37,7 +37,7 @@ function babel(): Plugin;
 function editorconfig(): Plugin;
 ```
 
-- Source file `.editorconfig` of type `string`
+- Source file `.editorconfig` of type `object`
 - Optional dependency file `.vscode/extensions.json` of type `object`
 
 ### eslint
@@ -47,7 +47,7 @@ function eslint(): Plugin;
 ```
 
 - **Command** of type `lint`
-- Source file `.eslintignore` of type `string`
+- Source file `.eslintignore` of type `object`
 - Source file `.eslintrc.json` of type `object`
 - Optional dependency file `.vscode/extensions.json` of type `object`
 
@@ -57,7 +57,7 @@ function eslint(): Plugin;
 function git(): Plugin;
 ```
 
-- Versioned source file `.gitignore` of type `string`
+- Versioned source file `.gitignore` of type `object`
 
 ### github
 
@@ -116,12 +116,12 @@ function prettier(): Plugin;
 ```
 
 - **Command** of type `fmt`
-- Source file `.prettierignore` of type `string`
+- Source file `.prettierignore` of type `object`
 - Source file `.prettierrc.json` of type `object`
 - Optional dependency file `.vscode/extensions.json` of type `object`
 - Optional dependency file `.vscode/settings.json` of type `object`
 - Optional dependency file `.eslintrc.json` of type `object`
-- Optional dependency file `.editorconfig` of type `string`
+- Optional dependency file `.editorconfig` of type `object`
 
 ### react
 

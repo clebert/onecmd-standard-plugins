@@ -21,6 +21,34 @@ A set of standard plugins for use with
 npm install @onecmd/standard-plugins --save-dev
 ```
 
+## Usage
+
+1. Install the standard plugins:
+   `npm install @onecmd/standard-plugins --save-dev`
+2. Create a file named `onecmd.js`:
+
+```js
+// @ts-check
+
+const plugins = require('@onecmd/standard-plugins');
+
+module.exports = [
+  plugins.babel(),
+  plugins.editorconfig(),
+  plugins.eslint(),
+  plugins.git(),
+  plugins.jest({coverage: true}),
+  plugins.node('16'),
+  plugins.npm(),
+  plugins.prettier(),
+  plugins.typescript('node', 'package'),
+  plugins.vscode({showFilesInEditor: false}),
+];
+```
+
+3. Run: `onecmd setup`
+4. Run: `onecmd compile && onecmd fmt --check && onecmd lint && onecmd test`
+
 ## Plugins
 
 ### babel

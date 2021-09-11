@@ -1,13 +1,15 @@
-import type {Plugin} from 'onecmd';
+import type {ManagedSource, Plugin} from 'onecmd';
+import {isObject} from './util/is-object';
 import {serializeJson} from './util/serialize-json';
 
 export const babel = (): Plugin => ({
   sources: [
     {
-      type: 'object',
+      type: 'managed',
       path: '.babelrc.json',
-      generate: () => ({}),
+      is: isObject,
+      create: () => ({}),
       serialize: serializeJson,
-    },
+    } as ManagedSource<object>,
   ],
 });

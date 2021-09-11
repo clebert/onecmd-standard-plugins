@@ -1,3 +1,3 @@
-export function serializeText(input: string): string {
-  return input.endsWith('\n') ? input : input + '\n';
+export function serializeText(content: string): string {
+  return content.endsWith('\n') ? content : content + '\n';
 }

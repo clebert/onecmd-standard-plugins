@@ -1,14 +1,17 @@
 import deepmerge from 'deepmerge';
-import type {Plugin} from 'onecmd';
+import type {ManagedDependency, ManagedSource, Plugin} from 'onecmd';
+import {isObject} from './util/is-object';
+import {isStringArray} from './util/is-string-array';
 import {serializeLines} from './util/serialize-lines';
 
 export const editorconfig = (): Plugin => ({
   sources: [
     {
-      type: 'object',
+      type: 'managed',
       path: '.editorconfig',
+      is: isStringArray,
 
-      generate: () => [
+      create: () => [
         'root = true',
         '[*]',
         'charset = utf-8',
@@ -20,17 +23,23 @@ export const editorconfig = (): Plugin => ({
       ],
 
       serialize: serializeLines,
-    },
+    } as ManagedSource<readonly string[]>,
   ],
   dependencies: [
     {
-      type: 'object',
+      type: 'managed',
       path: '.vscode/extensions.json',
+      is: isObject,
 
-      generate: (input) =>
-        deepmerge(input, {
-          recommendations: ['editorconfig.editorconfig'],
-        }),
-    },
+      update: (content) =>
+        deepmerge(content, {recommendations: ['editorconfig.editorconfig']}),
+    } as ManagedDependency<object>,
+
+    {
+      type: 'managed',
+      path: '.vscode/settings.json',
+      is: isObject,
+      update: (content) => deepmerge(content, {'editor.formatOnSave': true}),
+    } as ManagedDependency<object>,
   ],
 });

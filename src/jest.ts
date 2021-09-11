@@ -1,5 +1,6 @@
 import {dirname, resolve} from 'path';
-import type {Plugin} from 'onecmd';
+import type {ManagedSource, Plugin} from 'onecmd';
+import {isObject} from './util/is-object';
 import {serializeJson} from './util/serialize-json';
 
 export interface JestPluginOptions {
@@ -20,12 +21,14 @@ export const jest = ({coverage = false}: JestPluginOptions = {}): Plugin => ({
     },
   ],
   sources: [
-    coverage ? {type: 'unknown', path: 'coverage'} : undefined,
-    {
-      type: 'object',
-      path: 'jest.config.json',
+    coverage ? {type: 'unmanaged', path: 'coverage'} : undefined,
 
-      generate: () => ({
+    {
+      type: 'managed',
+      path: 'jest.config.json',
+      is: isObject,
+
+      create: () => ({
         coverageThreshold: coverage
           ? {
               global: {
@@ -42,6 +45,6 @@ export const jest = ({coverage = false}: JestPluginOptions = {}): Plugin => ({
       }),
 
       serialize: serializeJson,
-    },
+    } as ManagedSource<object>,
   ],
 });

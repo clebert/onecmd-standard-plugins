@@ -1,6 +1,7 @@
 import {dirname, resolve} from 'path';
 import deepmerge from 'deepmerge';
-import type {Plugin} from 'onecmd';
+import type {ManagedDependency, ManagedSource, Plugin} from 'onecmd';
+import {isObject} from './util/is-object';
 import {serializeJson} from './util/serialize-json';
 
 const tscPath = resolve(dirname(require.resolve('typescript')), '../bin/tsc');
@@ -57,10 +58,11 @@ export const typescript = (
   ],
   sources: [
     {
-      type: 'object',
+      type: 'managed',
       path: 'tsconfig.json',
+      is: isObject,
 
-      generate: () => ({
+      create: () => ({
         compilerOptions: {
           // Type Checking
           allowUnreachableCode: false,
@@ -97,53 +99,58 @@ export const typescript = (
       }),
 
       serialize: serializeJson,
-    },
+    } as ManagedSource<object>,
 
-    dist === 'package' ? {type: 'unknown', path: 'lib'} : undefined,
+    dist === 'package' ? {type: 'unmanaged', path: 'lib'} : undefined,
 
     dist === 'package'
-      ? {
-          type: 'object',
+      ? ({
+          type: 'managed',
           path: 'tsconfig.cjs.json',
+          is: isObject,
 
-          generate: () => ({
+          create: () => ({
             compilerOptions: {module: 'CommonJS', outDir: 'lib/cjs'},
             extends: './tsconfig.json',
           }),
 
           serialize: serializeJson,
-        }
+        } as ManagedSource<object>)
       : undefined,
 
     dist === 'package'
-      ? {
-          type: 'object',
+      ? ({
+          type: 'managed',
           path: 'tsconfig.esm.json',
+          is: isObject,
 
-          generate: () => ({
+          create: () => ({
             compilerOptions: {outDir: 'lib/esm'},
             extends: './tsconfig.json',
           }),
 
           serialize: serializeJson,
-        }
+        } as ManagedSource<object>)
       : undefined,
   ],
   dependencies: [
     {
-      type: 'object',
+      type: 'managed',
       path: '.vscode/settings.json',
+      is: isObject,
 
-      generate: (input) =>
-        deepmerge(input, {'typescript.tsdk': 'node_modules/typescript/lib'}),
-    },
+      update: (content) =>
+        deepmerge(content, {'typescript.tsdk': 'node_modules/typescript/lib'}),
+    } as ManagedDependency<object>,
+
     {
-      type: 'object',
+      type: 'managed',
       path: '.eslintrc.json',
+      is: isObject,
 
-      generate: (input) =>
+      update: (content) =>
         deepmerge(
-          deepmerge(input, {
+          deepmerge(content, {
             parser: '@typescript-eslint/parser',
             parserOptions: {project: 'tsconfig.json'},
             plugins: ['@typescript-eslint'],
@@ -159,11 +166,14 @@ export const typescript = (
           },
           {arrayMerge: (_, source) => source}
         ),
-    },
+    } as ManagedDependency<object>,
+
     {
-      type: 'object',
+      type: 'managed',
       path: '.babelrc.json',
-      generate: (input) => deepmerge(input, {presets: ['@babel/typescript']}),
-    },
+      is: isObject,
+
+      update: (content) => deepmerge(content, {presets: ['@babel/typescript']}),
+    } as ManagedDependency<object>,
   ],
 });

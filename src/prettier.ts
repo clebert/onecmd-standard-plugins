@@ -1,6 +1,8 @@
 import {dirname, resolve} from 'path';
 import deepmerge from 'deepmerge';
-import type {Plugin} from 'onecmd';
+import type {ManagedDependency, ManagedSource, Plugin} from 'onecmd';
+import {isObject} from './util/is-object';
+import {isStringArray} from './util/is-string-array';
 import {serializeJson} from './util/serialize-json';
 import {serializeLines} from './util/serialize-lines';
 
@@ -18,16 +20,19 @@ export const prettier = (): Plugin => ({
   ],
   sources: [
     {
-      type: 'object',
+      type: 'managed',
       path: '.prettierignore',
-      generate: (otherSources) => Object.keys(otherSources),
+      is: isStringArray,
+      create: (otherSources) => Object.keys(otherSources),
       serialize: serializeLines,
-    },
-    {
-      type: 'object',
-      path: '.prettierrc.json',
+    } as ManagedSource<readonly string[]>,
 
-      generate: () => ({
+    {
+      type: 'managed',
+      path: '.prettierrc.json',
+      is: isObject,
+
+      create: () => ({
         bracketSpacing: false,
         printWidth: 80,
         proseWrap: 'always',
@@ -36,36 +41,43 @@ export const prettier = (): Plugin => ({
       }),
 
       serialize: serializeJson,
-    },
+    } as ManagedSource<object>,
   ],
   dependencies: [
     {
-      type: 'object',
+      type: 'managed',
       path: '.vscode/extensions.json',
+      is: isObject,
 
-      generate: (input) =>
-        deepmerge(input, {recommendations: ['esbenp.prettier-vscode']}),
-    },
+      update: (content) =>
+        deepmerge(content, {recommendations: ['esbenp.prettier-vscode']}),
+    } as ManagedDependency<object>,
+
     {
-      type: 'object',
+      type: 'managed',
       path: '.vscode/settings.json',
-      generate: (input) => deepmerge(input, {'editor.formatOnSave': true}),
-    },
-    {
-      type: 'object',
-      path: '.eslintrc.json',
-      generate: (input) => deepmerge(input, {extends: ['prettier']}),
-    },
-    {
-      type: 'object',
-      path: '.editorconfig',
+      is: isObject,
+      update: (content) => deepmerge(content, {'editor.formatOnSave': true}),
+    } as ManagedDependency<object>,
 
-      generate: (input) => [
-        ...(input as string[]),
+    {
+      type: 'managed',
+      path: '.eslintrc.json',
+      is: isObject,
+      update: (content) => deepmerge(content, {extends: ['prettier']}),
+    } as ManagedDependency<object>,
+
+    {
+      type: 'managed',
+      path: '.editorconfig',
+      is: isStringArray,
+
+      update: (content) => [
+        ...(content as string[]),
         '[*.{html,js,json,md,ts,tsx,yml}]',
         'insert_final_newline = false',
         'trim_trailing_whitespace = false',
       ],
-    },
+    } as ManagedDependency<readonly string[]>,
   ],
 });

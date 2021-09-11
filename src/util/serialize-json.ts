@@ -1,3 +1,3 @@
-export function serializeJson(input: object): string {
-  return JSON.stringify(input, null, 2) + '\n';
+export function serializeJson(content: object): string {
+  return JSON.stringify(content, null, 2) + '\n';
 }

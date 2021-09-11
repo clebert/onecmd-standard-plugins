@@ -1,5 +1,5 @@
 import {dump} from 'js-yaml';
 
-export function serializeYaml(input: object): string {
-  return dump(input, {noRefs: true});
+export function serializeYaml(content: object): string {
+  return dump(content, {noRefs: true});
 }

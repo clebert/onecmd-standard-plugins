@@ -1,7 +1,7 @@
 import {dirname, resolve} from 'path';
 import type {ManagedSource, Plugin} from 'onecmd';
-import {isObject} from './util/is-object';
-import {serializeJson} from './util/serialize-json';
+import {isObject} from '../predicate/is-object';
+import {serializeJson} from '../serializer/serialize-json';
 
 export interface JestPluginOptions {
   readonly coverage?: boolean;

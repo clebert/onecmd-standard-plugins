@@ -1,6 +1,6 @@
 import type {ManagedSource, Plugin} from 'onecmd';
-import {isStringArray} from './util/is-string-array';
-import {serializeLines} from './util/serialize-lines';
+import {isStringArray} from '../predicate/is-string-array';
+import {serializeLines} from '../serializer/serialize-lines';
 
 export const git = (): Plugin => ({
   sources: [

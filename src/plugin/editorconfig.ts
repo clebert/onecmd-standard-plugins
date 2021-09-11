@@ -1,8 +1,8 @@
 import deepmerge from 'deepmerge';
 import type {ManagedDependency, ManagedSource, Plugin} from 'onecmd';
-import {isObject} from './util/is-object';
-import {isStringArray} from './util/is-string-array';
-import {serializeLines} from './util/serialize-lines';
+import {isObject} from '../predicate/is-object';
+import {isStringArray} from '../predicate/is-string-array';
+import {serializeLines} from '../serializer/serialize-lines';
 
 export const editorconfig = (): Plugin => ({
   sources: [

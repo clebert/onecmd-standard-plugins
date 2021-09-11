@@ -1,10 +1,10 @@
 import {dirname, resolve} from 'path';
 import deepmerge from 'deepmerge';
 import type {ManagedDependency, ManagedSource, Plugin} from 'onecmd';
-import {isObject} from './util/is-object';
-import {isStringArray} from './util/is-string-array';
-import {serializeJson} from './util/serialize-json';
-import {serializeLines} from './util/serialize-lines';
+import {isObject} from '../predicate/is-object';
+import {isStringArray} from '../predicate/is-string-array';
+import {serializeJson} from '../serializer/serialize-json';
+import {serializeLines} from '../serializer/serialize-lines';
 
 export const eslint = (): Plugin => ({
   commands: [

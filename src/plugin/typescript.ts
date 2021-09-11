@@ -1,8 +1,8 @@
 import {dirname, resolve} from 'path';
 import deepmerge from 'deepmerge';
 import type {ManagedDependency, ManagedSource, Plugin} from 'onecmd';
-import {isObject} from './util/is-object';
-import {serializeJson} from './util/serialize-json';
+import {isObject} from '../predicate/is-object';
+import {serializeJson} from '../serializer/serialize-json';
 
 const tscPath = resolve(dirname(require.resolve('typescript')), '../bin/tsc');
 

@@ -1,6 +1,6 @@
 import deepmerge from 'deepmerge';
 import type {ManagedDependency, Plugin} from 'onecmd';
-import {isObject} from './util/is-object';
+import {isObject} from '../predicate/is-object';
 
 export const react = (): Plugin => ({
   dependencies: [

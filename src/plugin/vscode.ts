@@ -1,4 +1,4 @@
-import type {ManagedSource, Plugin} from 'onecmd';
+import type {Plugin} from 'onecmd';
 import {isObject} from '../predicate/is-object';
 import {serializeJson} from '../serializer/serialize-json';
 
@@ -9,33 +9,33 @@ export interface VscodePluginOptions {
 export const vscode = ({
   showFilesInEditor = false,
 }: VscodePluginOptions = {}): Plugin => ({
-  sources: [
-    {type: 'unmanaged', path: '.vscode'},
-
+  setup: () => [
     {
-      type: 'managed',
+      type: 'new',
       path: '.vscode/extensions.json',
       is: isObject,
       create: () => ({recommendations: []}),
       serialize: serializeJson,
-    } as ManagedSource<object>,
+    },
 
     {
-      type: 'managed',
+      type: 'new',
       path: '.vscode/settings.json',
       is: isObject,
 
-      create: (otherSources) => ({
-        'files.exclude': Object.entries(otherSources).reduce(
-          (exclude, [path, {editable, versionable}]) => ({
+      create: (otherFiles) => ({
+        'files.exclude': Object.entries(otherFiles).reduce(
+          (exclude, [path, {visible}]) => ({
             ...exclude,
-            [path]: !showFilesInEditor && !editable && !versionable,
+            [path]: !showFilesInEditor && !visible,
           }),
           {'**/.DS_Store': true, '**/.git': true} as Record<string, boolean>
         ),
       }),
 
       serialize: serializeJson,
-    } as ManagedSource<object>,
+    },
+
+    {type: 'ref', path: '.vscode'},
   ],
 });

@@ -1,9 +1,19 @@
 import type {Plugin} from 'onecmd';
 
 export const npm = (): Plugin => ({
-  sources: [
-    {type: 'unmanaged', path: 'node_modules'},
-    {type: 'unmanaged', path: 'package-lock.json', versionable: true},
-    {type: 'unmanaged', path: 'package.json', versionable: true},
+  setup: () => [
+    {type: 'ref', path: 'node_modules'},
+
+    {
+      type: 'ref',
+      path: 'package-lock.json',
+      attrs: {versioned: true, visible: true},
+    },
+
+    {
+      type: 'ref',
+      path: 'package.json',
+      attrs: {versioned: true, visible: true},
+    },
   ],
 });

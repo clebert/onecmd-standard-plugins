@@ -1,11 +1,11 @@
 import deepmerge from 'deepmerge';
-import type {ManagedDependency, Plugin} from 'onecmd';
+import type {Plugin} from 'onecmd';
 import {isObject} from '../predicate/is-object';
 
 export const preact = (): Plugin => ({
-  dependencies: [
+  setup: () => [
     {
-      type: 'managed',
+      type: 'mod',
       path: 'tsconfig.json',
       is: isObject,
 
@@ -13,6 +13,6 @@ export const preact = (): Plugin => ({
         deepmerge(content, {
           compilerOptions: {jsx: 'react-jsx', jsxImportSource: 'preact'},
         }),
-    } as ManagedDependency<object>,
+    },
   ],
 });

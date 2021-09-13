@@ -1,23 +1,23 @@
 import deepmerge from 'deepmerge';
-import type {ManagedDependency, Plugin} from 'onecmd';
+import type {Plugin} from 'onecmd';
 import {isObject} from '../predicate/is-object';
 
 export const react = (): Plugin => ({
-  dependencies: [
+  setup: () => [
     {
-      type: 'managed',
+      type: 'mod',
       path: '.babelrc.json',
       is: isObject,
       update: (content) => deepmerge(content, {presets: ['@babel/react']}),
-    } as ManagedDependency<object>,
+    },
 
     {
-      type: 'managed',
+      type: 'mod',
       path: 'tsconfig.json',
       is: isObject,
 
       update: (content) =>
         deepmerge(content, {compilerOptions: {jsx: 'react'}}),
-    } as ManagedDependency<object>,
+    },
   ],
 });

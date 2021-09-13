@@ -1,5 +1,5 @@
 import {dirname, resolve} from 'path';
-import type {ManagedSource, Plugin} from 'onecmd';
+import type {Plugin} from 'onecmd';
 import {isObject} from '../predicate/is-object';
 import {serializeJson} from '../serializer/serialize-json';
 
@@ -8,23 +8,9 @@ export interface JestPluginOptions {
 }
 
 export const jest = ({coverage = false}: JestPluginOptions = {}): Plugin => ({
-  commands: [
+  setup: () => [
     {
-      type: 'test',
-      path: resolve(dirname(require.resolve('jest')), '../bin/jest.js'),
-
-      getArgs: ({watch}) => [
-        '--silent',
-        coverage ? '--coverage' : undefined,
-        watch ? '--watch' : undefined,
-      ],
-    },
-  ],
-  sources: [
-    coverage ? {type: 'unmanaged', path: 'coverage'} : undefined,
-
-    {
-      type: 'managed',
+      type: 'new',
       path: 'jest.config.json',
       is: isObject,
 
@@ -45,6 +31,20 @@ export const jest = ({coverage = false}: JestPluginOptions = {}): Plugin => ({
       }),
 
       serialize: serializeJson,
-    } as ManagedSource<object>,
+    },
+
+    coverage ? {type: 'ref', path: 'coverage'} : undefined,
+  ],
+
+  test: ({watch}) => [
+    {
+      command: resolve(dirname(require.resolve('jest')), '../bin/jest.js'),
+
+      args: [
+        '--silent',
+        coverage ? '--coverage' : undefined,
+        watch ? '--watch' : undefined,
+      ],
+    },
   ],
 });

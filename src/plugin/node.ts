@@ -1,22 +1,21 @@
 import deepmerge from 'deepmerge';
-import type {ManagedDependency, ManagedSource, Plugin} from 'onecmd';
+import type {Plugin} from 'onecmd';
 import {isObject} from '../predicate/is-object';
 import {isString} from '../predicate/is-string';
 import {serializeText} from '../serializer/serialize-text';
 
 export const node = (version: string): Plugin => ({
-  sources: [
+  setup: () => [
     {
-      type: 'managed',
+      type: 'new',
       path: '.node-version',
       is: isString,
       create: () => version,
       serialize: serializeText,
-    } as ManagedSource<string>,
-  ],
-  dependencies: [
+    },
+
     {
-      type: 'managed',
+      type: 'mod',
       path: '.babelrc.json',
       is: isObject,
 
@@ -24,6 +23,6 @@ export const node = (version: string): Plugin => ({
         deepmerge(content, {
           presets: [['@babel/env', {targets: {node: version}}]],
         }),
-    } as ManagedDependency<object>,
+    },
   ],
 });

@@ -31,6 +31,7 @@ npm install @onecmd/standard-plugins --save-dev
 // @ts-check
 
 const std = require('@onecmd/standard-plugins');
+const nodeVersion = '16';
 
 /** @type {readonly import('onecmd').Plugin[]} */
 const plugins = [
@@ -38,8 +39,9 @@ const plugins = [
   std.editorconfig(),
   std.eslint(),
   std.git(),
+  std.github({nodeVersion}),
   std.jest({coverage: true}),
-  std.node('16'),
+  std.node(nodeVersion),
   std.npm(),
   std.prettier(),
   std.typescript('node', 'package'),
@@ -50,7 +52,7 @@ module.exports = plugins;
 ```
 
 3. Run: `onecmd setup`
-4. Run: `onecmd compile && onecmd fmt --check && onecmd lint && onecmd test`
+4. Run: `onecmd compile && onecmd format --check && onecmd lint && onecmd test`
 
 ## Plugins
 
@@ -60,7 +62,8 @@ module.exports = plugins;
 function babel(): Plugin;
 ```
 
-- Managed source file `.babelrc.json` of type `object`
+- **setup**
+  - `new` file `.babelrc.json` with content of type `object`
 
 ### editorconfig
 
@@ -68,9 +71,10 @@ function babel(): Plugin;
 function editorconfig(): Plugin;
 ```
 
-- Managed source file `.editorconfig` of type `string[]`
-- Managed optional dependency file `.vscode/extensions.json` of type `object`
-- Managed optional dependency file `.vscode/settings.json` of type `object`
+- **setup**
+  - `new` file `.editorconfig` with content of type `string[]`
+  - `mod` file `.vscode/extensions.json` with content of type `object`
+  - `mod` file `.vscode/settings.json` with content of type `object`
 
 ### eslint
 
@@ -78,10 +82,11 @@ function editorconfig(): Plugin;
 function eslint(): Plugin;
 ```
 
-- **Command** of type `lint`
-- Managed source file `.eslintignore` of type `string[]`
-- Managed source file `.eslintrc.json` of type `object`
-- Managed optional dependency file `.vscode/extensions.json` of type `object`
+- **lint**
+- **setup**
+  - `new` file `.eslintignore` with content of type `string[]`
+  - `new` file `.eslintrc.json` with content of type `object`
+  - `mod` file `.vscode/extensions.json` with content of type `object`
 
 ### git
 
@@ -89,7 +94,8 @@ function eslint(): Plugin;
 function git(): Plugin;
 ```
 
-- Managed versionable source file `.gitignore` of type `string[]`
+- **setup**
+  - `new` file `.gitignore` with content of type `string[]`
 
 ### github
 
@@ -102,7 +108,8 @@ function github({
 }?: GithubPluginOptions): Plugin;
 ```
 
-- Managed versionable source file `.github/workflows/ci.yml` of type `object`
+- **setup**
+  - `new` file `.github/workflows/ci.yml` with content of type `object`
 
 ### jest
 
@@ -110,9 +117,10 @@ function github({
 function jest({coverage = false}?: JestPluginOptions): Plugin;
 ```
 
-- **Command** of type `test`
-- Managed source file `jest.config.json` of type `object`
-- Unmanaged source file `coverage` (`coverage=true`)
+- **test**
+- **setup**
+  - `new` file `jest.config.json` with content of type `object`
+  - `ref` file `coverage` (`coverage=true`)
 
 ### node
 
@@ -120,8 +128,9 @@ function jest({coverage = false}?: JestPluginOptions): Plugin;
 function node(version: string): Plugin;
 ```
 
-- Managed source file `.node-version` of type `string`
-- Managed optional dependency file `.babelrc.json` of type `object`
+- **setup**
+  - `new` file `.node-version` with content of type `string`
+  - `mod` file `.babelrc.json` with content of type `object`
 
 ### npm
 
@@ -129,9 +138,10 @@ function node(version: string): Plugin;
 function npm(): Plugin;
 ```
 
-- Unmanaged source file `node_modules`
-- Unmanaged versionable source file `package-lock.json`
-- Unmanaged versionable source file `package.json`
+- **setup**
+  - `ref` file `node_modules`
+  - `ref` file `package-lock.json`
+  - `ref` file `package.json`
 
 ### preact
 
@@ -139,7 +149,8 @@ function npm(): Plugin;
 function preact(): Plugin;
 ```
 
-- Managed optional dependency file `tsconfig.json` of type `object`
+- **setup**
+  - `mod` file `tsconfig.json` with content of type `object`
 
 ### prettier
 
@@ -147,13 +158,14 @@ function preact(): Plugin;
 function prettier(): Plugin;
 ```
 
-- **Command** of type `fmt`
-- Managed source file `.prettierignore` of type `string[]`
-- Managed source file `.prettierrc.json` of type `object`
-- Managed optional dependency file `.vscode/extensions.json` of type `object`
-- Managed optional dependency file `.vscode/settings.json` of type `object`
-- Managed optional dependency file `.eslintrc.json` of type `object`
-- Managed optional dependency file `.editorconfig` of type `string[]`
+- **format**
+- **setup**
+  - `new` file `.prettierignore` with content of type `string[]`
+  - `new` file `.prettierrc.json` with content of type `object`
+  - `mod` file `.editorconfig` with content of type `string[]`
+  - `mod` file `.eslintrc.json` with content of type `object`
+  - `mod` file `.vscode/extensions.json` with content of type `object`
+  - `mod` file `.vscode/settings.json` with content of type `object`
 
 ### react
 
@@ -161,8 +173,9 @@ function prettier(): Plugin;
 function react(): Plugin;
 ```
 
-- Managed optional dependency file `.babelrc.json` of type `object`
-- Managed optional dependency file `tsconfig.json` of type `object`
+- **setup**
+  - `mod` file `.babelrc.json` with content of type `object`
+  - `mod` file `tsconfig.json` with content of type `object`
 
 ### typescript
 
@@ -170,14 +183,17 @@ function react(): Plugin;
 function typescript(arch: 'node' | 'web', dist: 'bundle' | 'package'): Plugin;
 ```
 
-- **Command** of type `compile`
-- Managed source file `tsconfig.json` of type `object`
-- Managed source file `tsconfig.cjs.json` of type `object` (`dist='package'`)
-- Managed source file `tsconfig.esm.json` of type `object` (`dist='package'`)
-- Unmanaged source file `lib` (`dist='package'`)
-- Managed optional dependency file `.vscode/settings.json` of type `object`
-- Managed optional dependency file `.eslintrc.json` of type `object`
-- Managed optional dependency file `.babelrc.json` of type `object`
+- **compile**
+- **setup**
+  - `new` file `tsconfig.json` with content of type `object`
+  - `new` file `tsconfig.cjs.json` with content of type `object`
+    (`dist='package'`)
+  - `new` file `tsconfig.esm.json` with content of type `object`
+    (`dist='package'`)
+  - `mod` file `.babelrc.json` with content of type `object`
+  - `mod` file `.eslintrc.json` with content of type `object`
+  - `mod` file `.vscode/settings.json` with content of type `object`
+  - `ref` file `lib` (`dist='package'`)
 
 ### vscode
 
@@ -185,9 +201,10 @@ function typescript(arch: 'node' | 'web', dist: 'bundle' | 'package'): Plugin;
 function vscode({showFilesInEditor = false}?: VscodePluginOptions): Plugin;
 ```
 
-- Managed source file `.vscode/extensions.json` of type `object`
-- Managed source file `.vscode/settings.json` of type `object`
-- Unmanaged source file `.vscode`
+- **setup**
+  - `new` file `.vscode/extensions.json` with content of type `object`
+  - `new` file `.vscode/settings.json` with content of type `object`
+  - `ref` file `.vscode`
 
 ---
 

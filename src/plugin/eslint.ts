@@ -1,30 +1,23 @@
 import {dirname, resolve} from 'path';
 import deepmerge from 'deepmerge';
-import type {ManagedDependency, ManagedSource, Plugin} from 'onecmd';
+import type {Plugin} from 'onecmd';
 import {isObject} from '../predicate/is-object';
 import {isStringArray} from '../predicate/is-string-array';
 import {serializeJson} from '../serializer/serialize-json';
 import {serializeLines} from '../serializer/serialize-lines';
 
 export const eslint = (): Plugin => ({
-  commands: [
+  setup: () => [
     {
-      type: 'lint',
-      path: resolve(dirname(require.resolve('eslint')), '../bin/eslint.js'),
-      getArgs: ({fix}) => ['**/*.{js,jsx,ts,tsx}', fix ? '--fix' : undefined],
-    },
-  ],
-  sources: [
-    {
-      type: 'managed',
+      type: 'new',
       path: '.eslintignore',
       is: isStringArray,
-      create: (otherSources) => Object.keys(otherSources),
+      create: (otherFiles) => Object.keys(otherFiles),
       serialize: serializeLines,
-    } as ManagedSource<readonly string[]>,
+    },
 
     {
-      type: 'managed',
+      type: 'new',
       path: '.eslintrc.json',
       is: isObject,
 
@@ -45,16 +38,22 @@ export const eslint = (): Plugin => ({
       }),
 
       serialize: serializeJson,
-    } as ManagedSource<object>,
-  ],
-  dependencies: [
+    },
+
     {
-      type: 'managed',
+      type: 'mod',
       path: '.vscode/extensions.json',
       is: isObject,
 
       update: (content) =>
         deepmerge(content, {recommendations: ['dbaeumer.vscode-eslint']}),
-    } as ManagedDependency<object>,
+    },
+  ],
+
+  lint: ({fix}) => [
+    {
+      command: resolve(dirname(require.resolve('eslint')), '../bin/eslint.js'),
+      args: ['**/*.{js,jsx,ts,tsx}', fix ? '--fix' : undefined],
+    },
   ],
 });

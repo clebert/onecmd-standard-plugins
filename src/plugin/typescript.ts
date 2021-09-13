@@ -1,64 +1,18 @@
 import {dirname, resolve} from 'path';
 import deepmerge from 'deepmerge';
-import type {ManagedDependency, ManagedSource, Plugin} from 'onecmd';
+import type {Plugin} from 'onecmd';
 import {isObject} from '../predicate/is-object';
 import {serializeJson} from '../serializer/serialize-json';
 
-const tscPath = resolve(dirname(require.resolve('typescript')), '../bin/tsc');
+const command = resolve(dirname(require.resolve('typescript')), '../bin/tsc');
 
 export const typescript = (
   arch: 'node' | 'web',
   dist: 'bundle' | 'package'
 ): Plugin => ({
-  commands: [
-    dist === 'bundle'
-      ? {
-          type: 'compile',
-          path: tscPath,
-
-          getArgs: ({watch}) => [
-            '--project',
-            'tsconfig.json',
-            '--noEmit',
-            '--pretty',
-            watch ? '--watch' : undefined,
-          ],
-        }
-      : undefined,
-
-    dist === 'package'
-      ? {
-          type: 'compile',
-          path: tscPath,
-
-          getArgs: ({watch}) => [
-            '--project',
-            'tsconfig.cjs.json',
-            '--incremental',
-            '--pretty',
-            watch ? '--watch' : undefined,
-          ],
-        }
-      : undefined,
-
-    dist === 'package'
-      ? {
-          type: 'compile',
-          path: tscPath,
-
-          getArgs: ({watch}) => [
-            '--project',
-            'tsconfig.esm.json',
-            '--incremental',
-            '--pretty',
-            watch ? '--watch' : undefined,
-          ],
-        }
-      : undefined,
-  ],
-  sources: [
+  setup: () => [
     {
-      type: 'managed',
+      type: 'new',
       path: 'tsconfig.json',
       is: isObject,
 
@@ -99,13 +53,11 @@ export const typescript = (
       }),
 
       serialize: serializeJson,
-    } as ManagedSource<object>,
-
-    dist === 'package' ? {type: 'unmanaged', path: 'lib'} : undefined,
+    },
 
     dist === 'package'
-      ? ({
-          type: 'managed',
+      ? {
+          type: 'new',
           path: 'tsconfig.cjs.json',
           is: isObject,
 
@@ -115,12 +67,12 @@ export const typescript = (
           }),
 
           serialize: serializeJson,
-        } as ManagedSource<object>)
+        }
       : undefined,
 
     dist === 'package'
-      ? ({
-          type: 'managed',
+      ? {
+          type: 'new',
           path: 'tsconfig.esm.json',
           is: isObject,
 
@@ -130,21 +82,19 @@ export const typescript = (
           }),
 
           serialize: serializeJson,
-        } as ManagedSource<object>)
+        }
       : undefined,
-  ],
-  dependencies: [
+
     {
-      type: 'managed',
-      path: '.vscode/settings.json',
+      type: 'mod',
+      path: '.babelrc.json',
       is: isObject,
 
-      update: (content) =>
-        deepmerge(content, {'typescript.tsdk': 'node_modules/typescript/lib'}),
-    } as ManagedDependency<object>,
+      update: (content) => deepmerge(content, {presets: ['@babel/typescript']}),
+    },
 
     {
-      type: 'managed',
+      type: 'mod',
       path: '.eslintrc.json',
       is: isObject,
 
@@ -166,14 +116,61 @@ export const typescript = (
           },
           {arrayMerge: (_, source) => source}
         ),
-    } as ManagedDependency<object>,
+    },
 
     {
-      type: 'managed',
-      path: '.babelrc.json',
+      type: 'mod',
+      path: '.vscode/settings.json',
       is: isObject,
 
-      update: (content) => deepmerge(content, {presets: ['@babel/typescript']}),
-    } as ManagedDependency<object>,
+      update: (content) =>
+        deepmerge(content, {'typescript.tsdk': 'node_modules/typescript/lib'}),
+    },
+
+    dist === 'package' ? {type: 'ref', path: 'lib'} : undefined,
+  ],
+
+  compile: ({watch}) => [
+    dist === 'bundle'
+      ? {
+          command,
+
+          args: [
+            '--project',
+            'tsconfig.json',
+            '--noEmit',
+            '--pretty',
+            watch ? '--watch' : undefined,
+          ],
+        }
+      : undefined,
+
+    dist === 'package'
+      ? {
+          command,
+
+          args: [
+            '--project',
+            'tsconfig.cjs.json',
+            '--incremental',
+            '--pretty',
+            watch ? '--watch' : undefined,
+          ],
+        }
+      : undefined,
+
+    dist === 'package'
+      ? {
+          command,
+
+          args: [
+            '--project',
+            'tsconfig.esm.json',
+            '--incremental',
+            '--pretty',
+            watch ? '--watch' : undefined,
+          ],
+        }
+      : undefined,
   ],
 });

@@ -33,7 +33,7 @@ export const jest = ({coverage = false}: JestPluginOptions = {}): Plugin => ({
       serialize: serializeJson,
     },
 
-    coverage ? {type: 'ref', path: 'coverage'} : undefined,
+    {type: 'ref', path: 'coverage'},
   ],
 
   test: ({watch}) => [

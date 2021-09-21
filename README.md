@@ -120,7 +120,7 @@ function jest({coverage = false}?: JestPluginOptions): Plugin;
 - **test**
 - **setup**
   - `new` file `jest.config.json` with content of type `object`
-  - `ref` file `coverage` (`coverage=true`)
+  - `ref` file `coverage`
 
 ### node
 

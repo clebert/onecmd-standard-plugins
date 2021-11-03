@@ -33,6 +33,12 @@ export const eslint = (): Plugin => ({
               'warnOnUnassignedImports': true,
             },
           ],
+          // 'import/order' does not care about the order of the members in an
+          // import statement. For that 'sort-imports' is needed:
+          'sort-imports': [
+            'error',
+            {ignoreDeclarationSort: true, ignoreMemberSort: false},
+          ],
           'no-shadow': 'error',
         },
       }),

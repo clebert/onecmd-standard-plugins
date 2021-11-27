@@ -32,8 +32,8 @@ export const typescript = (
           strict: true,
 
           // Modules
-          module: 'ESNext',
-          moduleResolution: 'Node',
+          module: 'esnext',
+          moduleResolution: 'node',
           rootDir: 'src',
 
           // Emit
@@ -46,8 +46,8 @@ export const typescript = (
           isolatedModules: true,
 
           // Language and Environment
-          lib: arch === 'node' ? ['ES2017'] : ['DOM', 'ES2017'],
-          target: 'ES2017',
+          lib: arch === 'node' ? ['es2019'] : ['dom', 'es2019'],
+          target: 'es2019',
         },
         include: ['src/**/*.ts', 'src/**/*.tsx', '*.js'],
       }),
@@ -62,7 +62,7 @@ export const typescript = (
           is: isObject,
 
           create: () => ({
-            compilerOptions: {module: 'CommonJS', outDir: 'lib/cjs'},
+            compilerOptions: {module: 'commonjs', outDir: 'lib/cjs'},
             extends: './tsconfig.json',
           }),
 
@@ -108,6 +108,10 @@ export const typescript = (
           {
             rules: {
               '@typescript-eslint/await-thenable': 'error',
+              '@typescript-eslint/consistent-type-imports': [
+                'error',
+                {prefer: 'type-imports'},
+              ],
               '@typescript-eslint/no-floating-promises': 'error',
               '@typescript-eslint/no-shadow': ['error', {hoist: 'all'}],
               '@typescript-eslint/promise-function-async': 'error',

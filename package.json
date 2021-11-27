@@ -23,7 +23,7 @@
     "format": "onecmd format",
     "format:check": "onecmd format --check",
     "lint": "onecmd lint",
-    "prepare": "tsc src/*.ts --module CommonJS --outDir lib/cjs --declaration --esModuleInterop --lib ES2017 --target ES2017 && run-s setup",
+    "prepare": "tsc src/*.ts --module CommonJS --outDir lib/cjs --declaration --esModuleInterop --lib es2019 --target es2019 && run-s setup",
     "release": "npm version",
     "postrelease": "git push --follow-tags",
     "setup": "onecmd setup"

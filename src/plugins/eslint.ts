@@ -24,6 +24,8 @@ export const eslint = (): Plugin => ({
       create: () => ({
         plugins: ['eslint-plugin-import'],
         rules: {
+          'complexity': 'error',
+          'eqeqeq': ['error', 'always', {null: 'ignore'}],
           'import/no-extraneous-dependencies': 'error',
           'import/order': [
             'error',
@@ -33,13 +35,11 @@ export const eslint = (): Plugin => ({
               'warnOnUnassignedImports': true,
             },
           ],
-          // 'import/order' does not care about the order of the members in an
-          // import statement. For that 'sort-imports' is needed:
+          'no-shadow': 'error',
           'sort-imports': [
             'error',
             {ignoreDeclarationSort: true, ignoreMemberSort: false},
           ],
-          'no-shadow': 'error',
         },
       }),
 
@@ -53,6 +53,16 @@ export const eslint = (): Plugin => ({
 
       update: (content) =>
         deepmerge(content, {recommendations: ['dbaeumer.vscode-eslint']}),
+    },
+
+    {
+      type: 'mod',
+      path: '.vscode/settings.json',
+      is: isObject,
+      update: (content) =>
+        deepmerge(content, {
+          'editor.codeActionsOnSave': {'source.fixAll.eslint': true},
+        }),
     },
   ],
 

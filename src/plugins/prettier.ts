@@ -74,7 +74,11 @@ export const prettier = (): Plugin => ({
       type: 'mod',
       path: '.vscode/settings.json',
       is: isObject,
-      update: (content) => deepmerge(content, {'editor.formatOnSave': true}),
+      update: (content) =>
+        deepmerge(content, {
+          'editor.defaultFormatter': 'esbenp.prettier-vscode',
+          'editor.formatOnSave': true,
+        }),
     },
   ],
 

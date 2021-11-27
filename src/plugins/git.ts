@@ -1,6 +1,6 @@
 import type {Plugin} from 'onecmd';
-import {isStringArray} from '../predicate/is-string-array';
-import {serializeLines} from '../serializer/serialize-lines';
+import {isStringArray} from '../predicates/is-string-array';
+import {serializeLines} from '../serializers/serialize-lines';
 
 export const git = (): Plugin => ({
   setup: () => [

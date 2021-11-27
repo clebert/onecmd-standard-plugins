@@ -1,6 +1,6 @@
 import type {Plugin} from 'onecmd';
-import {isObject} from '../predicate/is-object';
-import {serializeJson} from '../serializer/serialize-json';
+import {isObject} from '../predicates/is-object';
+import {serializeJson} from '../serializers/serialize-json';
 
 export interface VscodePluginOptions {
   readonly showFilesInEditor?: boolean;

@@ -1,6 +1,6 @@
 import type {Plugin} from 'onecmd';
-import {isObject} from '../predicate/is-object';
-import {serializeYaml} from '../serializer/serialize-yaml';
+import {isObject} from '../predicates/is-object';
+import {serializeYaml} from '../serializers/serialize-yaml';
 
 export interface GithubPluginOptions {
   readonly branches?: readonly string[];

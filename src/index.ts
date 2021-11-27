@@ -9,6 +9,7 @@ export * from './plugins/npm';
 export * from './plugins/preact';
 export * from './plugins/prettier';
 export * from './plugins/react';
+export * from './plugins/swc';
 export * from './plugins/typescript';
 export * from './plugins/vscode';
 export * from './predicates/is-object';

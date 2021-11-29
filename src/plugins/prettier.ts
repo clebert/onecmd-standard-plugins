@@ -1,85 +1,63 @@
 import {dirname, resolve} from 'path';
-import deepmerge from 'deepmerge';
 import type {Plugin} from 'onecmd';
+import {ObjectFile} from '../files/object-file';
+import {StringArrayFile} from '../files/string-array-file';
 import {isObject} from '../predicates/is-object';
 import {isStringArray} from '../predicates/is-string-array';
 import {serializeJson} from '../serializers/serialize-json';
 import {serializeLines} from '../serializers/serialize-lines';
+import {editorconfig} from './editorconfig';
+import {eslint} from './eslint';
+import {vscode} from './vscode';
+
+const configFile = new ObjectFile({
+  path: '.prettierrc.json',
+  is: isObject,
+  serialize: serializeJson,
+});
+
+const ignoreFile = new StringArrayFile({
+  path: '.prettierignore',
+  is: isStringArray,
+  serialize: serializeLines,
+});
 
 export const prettier = (): Plugin => ({
   setup: () => [
-    {
-      type: 'new',
-      path: '.prettierignore',
-      is: isStringArray,
+    configFile.new(() => ({
+      bracketSpacing: false,
+      printWidth: 80,
+      proseWrap: 'always',
+      quoteProps: 'consistent',
+      singleQuote: true,
+    })),
 
-      create: (otherFiles) =>
-        Object.entries(otherFiles)
-          .filter(([, {pretty}]) => !pretty)
-          .map(([path]) => path),
+    ignoreFile.new((otherFiles) =>
+      Object.entries(otherFiles)
+        .filter(([, {pretty}]) => !pretty)
+        .map(([path]) => path)
+    ),
 
-      serialize: serializeLines,
-    },
+    editorconfig.configFile.append(() => [
+      '[*.{html,js,json,md,ts,tsx,yml}]',
+      'charset = unset',
+      'end_of_line = unset',
+      'indent_size = unset',
+      'indent_style = unset',
+      'insert_final_newline = unset',
+      'trim_trailing_whitespace = unset',
+    ]),
 
-    {
-      type: 'new',
-      path: '.prettierrc.json',
-      is: isObject,
+    eslint.configFile.merge(() => ({extends: ['prettier']})),
 
-      create: () => ({
-        bracketSpacing: false,
-        printWidth: 80,
-        proseWrap: 'always',
-        quoteProps: 'consistent',
-        singleQuote: true,
-      }),
+    vscode.extensionsFile.merge(() => ({
+      recommendations: ['esbenp.prettier-vscode'],
+    })),
 
-      serialize: serializeJson,
-    },
-
-    {
-      type: 'mod',
-      path: '.editorconfig',
-      is: isStringArray,
-
-      update: (content) => [
-        ...(content as string[]),
-        '[*.{html,js,json,md,ts,tsx,yml}]',
-        'charset = unset',
-        'end_of_line = unset',
-        'indent_size = unset',
-        'indent_style = unset',
-        'insert_final_newline = unset',
-        'trim_trailing_whitespace = unset',
-      ],
-    },
-
-    {
-      type: 'mod',
-      path: '.eslintrc.json',
-      is: isObject,
-      update: (content) => deepmerge(content, {extends: ['prettier']}),
-    },
-
-    {
-      type: 'mod',
-      path: '.vscode/extensions.json',
-      is: isObject,
-
-      update: (content) =>
-        deepmerge(content, {recommendations: ['esbenp.prettier-vscode']}),
-    },
-
-    {
-      type: 'mod',
-      path: '.vscode/settings.json',
-      is: isObject,
-      update: (content) =>
-        deepmerge(content, {
-          'editor.defaultFormatter': 'esbenp.prettier-vscode',
-          'editor.formatOnSave': true,
-        }),
-    },
+    vscode.settingsFile.merge(() => ({
+      'editor.defaultFormatter': 'esbenp.prettier-vscode',
+      'editor.formatOnSave': true,
+    })),
   ],
 
   format: ({check}) => [
@@ -93,3 +71,6 @@ export const prettier = (): Plugin => ({
     },
   ],
 });
+
+prettier.configFile = configFile;
+prettier.ignoreFile = ignoreFile;

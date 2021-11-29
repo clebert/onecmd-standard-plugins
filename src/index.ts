@@ -1,3 +1,7 @@
+export * from './files/file';
+export * from './files/object-file';
+export * from './files/string-array-file';
+export * from './files/string-file';
 export * from './plugins/editorconfig';
 export * from './plugins/eslint';
 export * from './plugins/git';

@@ -1,9 +1,12 @@
-import deepmerge from 'deepmerge';
 import type {Plugin} from 'onecmd';
-import {isObject} from '../predicates/is-object';
+import {vscode} from './vscode';
 
 export const npm = (): Plugin => ({
   setup: () => [
+    vscode.extensionsFile.merge(() => ({
+      recommendations: ['eg2.vscode-npm-script'],
+    })),
+
     {type: 'ref', path: 'node_modules'},
 
     {
@@ -16,15 +19,6 @@ export const npm = (): Plugin => ({
       type: 'ref',
       path: 'package.json',
       attrs: {versioned: true, visible: true},
-    },
-
-    {
-      type: 'mod',
-      path: '.vscode/extensions.json',
-      is: isObject,
-
-      update: (content) =>
-        deepmerge(content, {recommendations: ['eg2.vscode-npm-script']}),
     },
   ],
 });

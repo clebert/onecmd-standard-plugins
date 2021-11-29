@@ -1,5 +1,6 @@
 import {dirname, resolve} from 'path';
 import type {Plugin} from 'onecmd';
+import {ObjectFile} from '../files/object-file';
 import {isObject} from '../predicates/is-object';
 import {serializeJson} from '../serializers/serialize-json';
 
@@ -7,31 +8,29 @@ export interface JestPluginOptions {
   readonly coverage?: boolean;
 }
 
+const configFile = new ObjectFile({
+  path: 'jest.config.json',
+  is: isObject,
+  serialize: serializeJson,
+});
+
 export const jest = ({coverage = false}: JestPluginOptions = {}): Plugin => ({
   setup: () => [
-    {
-      type: 'new',
-      path: 'jest.config.json',
-      is: isObject,
+    configFile.new(() => ({
+      coverageThreshold: coverage
+        ? {
+            global: {
+              branches: 100,
+              functions: 100,
+              lines: 100,
+              statements: 100,
+            },
+          }
+        : undefined,
 
-      create: () => ({
-        coverageThreshold: coverage
-          ? {
-              global: {
-                branches: 100,
-                functions: 100,
-                lines: 100,
-                statements: 100,
-              },
-            }
-          : undefined,
-
-        restoreMocks: true,
-        testMatch: ['**/src/**/*.test.{js,jsx,ts,tsx}'],
-      }),
-
-      serialize: serializeJson,
-    },
+      restoreMocks: true,
+      testMatch: ['**/src/**/*.test.{js,jsx,ts,tsx}'],
+    })),
 
     {type: 'ref', path: 'coverage'},
   ],
@@ -39,7 +38,6 @@ export const jest = ({coverage = false}: JestPluginOptions = {}): Plugin => ({
   test: ({watch}) => [
     {
       command: resolve(dirname(require.resolve('jest')), '../bin/jest.js'),
-
       args: [
         '--silent',
         coverage ? '--coverage' : undefined,
@@ -48,3 +46,5 @@ export const jest = ({coverage = false}: JestPluginOptions = {}): Plugin => ({
     },
   ],
 });
+
+jest.configFile = configFile;

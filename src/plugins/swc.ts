@@ -1,24 +1,21 @@
 import type {Plugin} from 'onecmd';
-import {serializeJson} from '..';
+import {ObjectFile} from '../files/object-file';
 import {isObject} from '../predicates/is-object';
+import {serializeJson} from '../serializers/serialize-json';
+import {jest} from './jest';
+
+const configFile = new ObjectFile({
+  path: '.swcrc',
+  is: isObject,
+  serialize: serializeJson,
+});
 
 export const swc = (): Plugin => ({
   setup: () => [
-    {
-      type: 'new',
-      path: '.swcrc',
-      is: isObject,
-      create: () => ({jsc: {externalHelpers: true}, sourceMaps: true}),
-      serialize: serializeJson,
-    },
-    {
-      type: 'mod',
-      path: 'jest.config.json',
-      is: isObject,
-      update: (content) => ({
-        ...content,
-        transform: {'^.+\\.tsx?$': ['@swc/jest']},
-      }),
-    },
+    configFile.new(() => ({jsc: {externalHelpers: true}, sourceMaps: true})),
+
+    jest.configFile.merge(() => ({transform: {'^.+\\.tsx?$': ['@swc/jest']}})),
   ],
 });
+
+swc.configFile = configFile;

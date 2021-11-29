@@ -5,6 +5,7 @@ import {isObject} from '../predicates/is-object';
 import {serializeJson} from '../serializers/serialize-json';
 
 const command = resolve(dirname(require.resolve('typescript')), '../bin/tsc');
+const target = 'es2019';
 
 export const typescript = (
   arch: 'node' | 'web',
@@ -46,8 +47,8 @@ export const typescript = (
           isolatedModules: true,
 
           // Language and Environment
-          lib: arch === 'node' ? ['es2019'] : ['dom', 'es2019'],
-          target: 'es2019',
+          lib: arch === 'node' ? [target] : ['dom', target],
+          target: target,
         },
         include: ['src/**/*.ts', 'src/**/*.tsx', '*.js'],
       }),
@@ -129,6 +130,16 @@ export const typescript = (
 
       update: (content) =>
         deepmerge(content, {'typescript.tsdk': 'node_modules/typescript/lib'}),
+    },
+
+    {
+      type: 'mod',
+      path: '.swcrc',
+      is: isObject,
+      update: (content) =>
+        deepmerge(content, {
+          jsc: {parser: {syntax: 'typescript', tsx: true}, target},
+        }),
     },
 
     dist === 'package' ? {type: 'ref', path: 'lib'} : undefined,

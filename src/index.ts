@@ -1,4 +1,3 @@
-export * from './plugins/babel';
 export * from './plugins/editorconfig';
 export * from './plugins/eslint';
 export * from './plugins/git';

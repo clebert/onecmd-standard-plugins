@@ -88,14 +88,6 @@ export const typescript = (
 
     {
       type: 'mod',
-      path: '.babelrc.json',
-      is: isObject,
-
-      update: (content) => deepmerge(content, {presets: ['@babel/typescript']}),
-    },
-
-    {
-      type: 'mod',
       path: '.eslintrc.json',
       is: isObject,
 

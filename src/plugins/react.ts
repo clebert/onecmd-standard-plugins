@@ -6,13 +6,6 @@ export const react = (): Plugin => ({
   setup: () => [
     {
       type: 'mod',
-      path: '.babelrc.json',
-      is: isObject,
-      update: (content) => deepmerge(content, {presets: ['@babel/react']}),
-    },
-
-    {
-      type: 'mod',
       path: 'tsconfig.json',
       is: isObject,
 

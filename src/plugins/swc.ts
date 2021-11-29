@@ -8,7 +8,7 @@ export const swc = (): Plugin => ({
       type: 'new',
       path: '.swcrc',
       is: isObject,
-      create: () => ({jsc: {}, sourceMaps: true}),
+      create: () => ({jsc: {externalHelpers: true}, sourceMaps: true}),
       serialize: serializeJson,
     },
     {

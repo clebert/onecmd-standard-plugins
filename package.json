@@ -1,6 +1,6 @@
 {
   "name": "@onecmd/standard-plugins",
-  "version": "0.13.1",
+  "version": "0.14.0",
   "description": "A set of standard plugins for use with onecmd.",
   "bugs": {
     "url": "https://github.com/clebert/onecmd-standard-plugins/issues"

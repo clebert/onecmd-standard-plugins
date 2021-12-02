@@ -38,7 +38,7 @@ export const eslint = (): Plugin => ({
         ],
         'no-shadow': `error`,
         'prefer-const': `error`,
-        'quotes': [`error`, `backtick`, {avoidEscape: true}],
+        'quotes': [`error`, `backtick`],
         'sort-imports': [
           `error`,
           {ignoreDeclarationSort: true, ignoreMemberSort: false},

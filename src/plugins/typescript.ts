@@ -101,6 +101,8 @@ export const typescript = (
           '@typescript-eslint/no-floating-promises': `error`,
           '@typescript-eslint/no-shadow': [`error`, {hoist: `all`}],
           '@typescript-eslint/promise-function-async': `error`,
+          'quotes': `off`,
+          '@typescript-eslint/quotes': [`error`, `backtick`],
           '@typescript-eslint/require-await': `error`,
         },
       }),

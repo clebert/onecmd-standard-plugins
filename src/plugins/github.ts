@@ -11,7 +11,7 @@ export interface GithubPluginOptions {
 }
 
 const ciFile = new ObjectFile({
-  path: '.github/workflows/ci.yml',
+  path: `.github/workflows/ci.yml`,
   attrs: {pretty: true, versioned: true, visible: true},
   is: isObject,
   serialize: (content) =>
@@ -21,38 +21,38 @@ const ciFile = new ObjectFile({
 });
 
 export const github = ({
-  branches = ['main'],
+  branches = [`main`],
   nodeVersion = undefined,
   omitReleaseStep = false,
-  runner = 'ubuntu-latest',
+  runner = `ubuntu-latest`,
 }: GithubPluginOptions = {}): Plugin => ({
   setup: () => [
     ciFile.new(() => ({
-      name: 'CI',
+      name: `CI`,
       on: {
         push: {branches},
         pull_request: {branches},
-        ...(!omitReleaseStep ? {release: {types: ['published']}} : {}),
+        ...(!omitReleaseStep ? {release: {types: [`published`]}} : {}),
       },
       jobs: {
         ci: {
           'runs-on': runner,
           'steps': [
-            {name: 'Checkout repository', uses: 'actions/checkout@v2'},
+            {name: `Checkout repository`, uses: `actions/checkout@v2`},
             {
-              name: 'Setup Node.js',
-              uses: 'actions/setup-node@v2',
+              name: `Setup Node.js`,
+              uses: `actions/setup-node@v2`,
               ...(nodeVersion ? {with: {'node-version': nodeVersion}} : {}),
             },
-            {name: 'Install dependencies', uses: 'bahmutov/npm-install@v1'},
-            {name: 'Run CI checks', run: 'npm run ci'},
+            {name: `Install dependencies`, uses: `bahmutov/npm-install@v1`},
+            {name: `Run CI checks`, run: `npm run ci`},
             ...(!omitReleaseStep
               ? [
                   {
-                    name: 'Publish to npm',
-                    if: "${{ github.event_name == 'release' }}",
-                    env: {NPM_AUTH_TOKEN: '${{ secrets.NPM_AUTH_TOKEN }}'},
-                    run: 'npm config set //registry.npmjs.org/:_authToken $NPM_AUTH_TOKEN\nnpm publish\n',
+                    name: `Publish to npm`,
+                    if: `\${{ github.event_name == 'release' }}`,
+                    env: {NPM_AUTH_TOKEN: `\${{ secrets.NPM_AUTH_TOKEN }}`},
+                    run: `npm config set //registry.npmjs.org/:_authToken $NPM_AUTH_TOKEN\nnpm publish\n`,
                   },
                 ]
               : []),

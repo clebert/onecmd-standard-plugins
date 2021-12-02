@@ -9,7 +9,7 @@ export interface JestPluginOptions {
 }
 
 const configFile = new ObjectFile({
-  path: 'jest.config.json',
+  path: `jest.config.json`,
   is: isObject,
   serialize: serializeJson,
 });
@@ -29,19 +29,19 @@ export const jest = ({coverage = false}: JestPluginOptions = {}): Plugin => ({
         : undefined,
 
       restoreMocks: true,
-      testMatch: ['**/src/**/*.test.{js,jsx,ts,tsx}'],
+      testMatch: [`**/src/**/*.test.{js,jsx,ts,tsx}`],
     })),
 
-    {type: 'ref', path: 'coverage'},
+    {type: `ref`, path: `coverage`},
   ],
 
   test: ({watch}) => [
     {
-      command: resolve(dirname(require.resolve('jest')), '../bin/jest.js'),
+      command: resolve(dirname(require.resolve(`jest`)), `../bin/jest.js`),
       args: [
-        '--silent',
-        coverage ? '--coverage' : undefined,
-        watch ? '--watch' : undefined,
+        `--silent`,
+        coverage ? `--coverage` : undefined,
+        watch ? `--watch` : undefined,
       ],
     },
   ],

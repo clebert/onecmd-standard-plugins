@@ -4,7 +4,7 @@ import {isString} from '../predicates/is-string';
 import {serializeText} from '../serializers/serialize-text';
 
 const versionFile = new StringFile({
-  path: '.node-version',
+  path: `.node-version`,
   is: isString,
   serialize: serializeText,
 });

@@ -9,13 +9,13 @@ import {serializeLines} from '../serializers/serialize-lines';
 import {vscode} from './vscode';
 
 const configFile = new ObjectFile({
-  path: '.eslintrc.json',
+  path: `.eslintrc.json`,
   is: isObject,
   serialize: serializeJson,
 });
 
 const ignoreFile = new StringArrayFile({
-  path: '.eslintignore',
+  path: `.eslintignore`,
   is: isStringArray,
   serialize: serializeLines,
 });
@@ -23,22 +23,24 @@ const ignoreFile = new StringArrayFile({
 export const eslint = (): Plugin => ({
   setup: () => [
     configFile.new(() => ({
-      plugins: ['eslint-plugin-import'],
+      plugins: [`eslint-plugin-import`],
       rules: {
-        'complexity': 'error',
-        'eqeqeq': ['error', 'always', {null: 'ignore'}],
-        'import/no-extraneous-dependencies': 'error',
+        'complexity': `error`,
+        'eqeqeq': [`error`, `always`, {null: `ignore`}],
+        'import/no-extraneous-dependencies': `error`,
         'import/order': [
-          'error',
+          `error`,
           {
-            'alphabetize': {order: 'asc'},
-            'newlines-between': 'never',
+            'alphabetize': {order: `asc`},
+            'newlines-between': `never`,
             'warnOnUnassignedImports': true,
           },
         ],
-        'no-shadow': 'error',
+        'no-shadow': `error`,
+        'prefer-const': `error`,
+        'quotes': [`error`, `backtick`, {avoidEscape: true}],
         'sort-imports': [
-          'error',
+          `error`,
           {ignoreDeclarationSort: true, ignoreMemberSort: false},
         ],
       },
@@ -47,7 +49,7 @@ export const eslint = (): Plugin => ({
     ignoreFile.new((otherFiles) => Object.keys(otherFiles)),
 
     vscode.extensionsFile.merge(() => ({
-      recommendations: ['dbaeumer.vscode-eslint'],
+      recommendations: [`dbaeumer.vscode-eslint`],
     })),
 
     vscode.settingsFile.merge(() => ({
@@ -57,8 +59,8 @@ export const eslint = (): Plugin => ({
 
   lint: ({fix}) => [
     {
-      command: resolve(dirname(require.resolve('eslint')), '../bin/eslint.js'),
-      args: ['**/*.{js,jsx,ts,tsx}', fix ? '--fix' : undefined],
+      command: resolve(dirname(require.resolve(`eslint`)), `../bin/eslint.js`),
+      args: [`**/*.{js,jsx,ts,tsx}`, fix ? `--fix` : undefined],
     },
   ],
 });

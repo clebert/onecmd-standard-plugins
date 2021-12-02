@@ -11,13 +11,13 @@ import {eslint} from './eslint';
 import {vscode} from './vscode';
 
 const configFile = new ObjectFile({
-  path: '.prettierrc.json',
+  path: `.prettierrc.json`,
   is: isObject,
   serialize: serializeJson,
 });
 
 const ignoreFile = new StringArrayFile({
-  path: '.prettierignore',
+  path: `.prettierignore`,
   is: isStringArray,
   serialize: serializeLines,
 });
@@ -27,8 +27,8 @@ export const prettier = (): Plugin => ({
     configFile.new(() => ({
       bracketSpacing: false,
       printWidth: 80,
-      proseWrap: 'always',
-      quoteProps: 'consistent',
+      proseWrap: `always`,
+      quoteProps: `consistent`,
       singleQuote: true,
     })),
 
@@ -39,34 +39,34 @@ export const prettier = (): Plugin => ({
     ),
 
     editorconfig.configFile.append(() => [
-      '[*.{html,js,json,md,ts,tsx,yml}]',
-      'charset = unset',
-      'end_of_line = unset',
-      'indent_size = unset',
-      'indent_style = unset',
-      'insert_final_newline = unset',
-      'trim_trailing_whitespace = unset',
+      `[*.{html,js,json,md,ts,tsx,yml}]`,
+      `charset = unset`,
+      `end_of_line = unset`,
+      `indent_size = unset`,
+      `indent_style = unset`,
+      `insert_final_newline = unset`,
+      `trim_trailing_whitespace = unset`,
     ]),
 
-    eslint.configFile.merge(() => ({extends: ['prettier']})),
+    eslint.configFile.merge(() => ({extends: [`prettier`]})),
 
     vscode.extensionsFile.merge(() => ({
-      recommendations: ['esbenp.prettier-vscode'],
+      recommendations: [`esbenp.prettier-vscode`],
     })),
 
     vscode.settingsFile.merge(() => ({
-      'editor.defaultFormatter': 'esbenp.prettier-vscode',
+      'editor.defaultFormatter': `esbenp.prettier-vscode`,
       'editor.formatOnSave': true,
     })),
   ],
 
   format: ({check}) => [
     {
-      command: resolve(dirname(require.resolve('prettier')), 'bin-prettier.js'),
+      command: resolve(dirname(require.resolve(`prettier`)), `bin-prettier.js`),
 
       args: [
-        check ? '--list-different' : '--write',
-        '**/*.{html,js,json,md,ts,tsx,yml}',
+        check ? `--list-different` : `--write`,
+        `**/*.{html,js,json,md,ts,tsx,yml}`,
       ],
     },
   ],

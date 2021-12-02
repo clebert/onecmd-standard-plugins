@@ -1,7 +1,7 @@
 // @ts-check
 
-const std = require('./lib/cjs/index.js');
-const nodeVersion = '16';
+const std = require(`./lib/cjs/index.js`);
+const nodeVersion = `16`;
 
 /** @type {readonly import('onecmd').Plugin[]} */
 const plugins = [
@@ -12,7 +12,7 @@ const plugins = [
   std.node(nodeVersion),
   std.npm(),
   std.prettier(),
-  std.typescript('node', 'package'),
+  std.typescript(`node`, `package`),
   std.vscode({showFilesInEditor: false}),
 ];
 

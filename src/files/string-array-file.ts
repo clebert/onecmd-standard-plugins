@@ -8,7 +8,7 @@ export class StringArrayFile extends File<readonly string[]> {
     const {path, is} = this.init;
 
     return {
-      type: 'mod',
+      type: `mod`,
       path,
       is,
       update: (content, otherFiles) => [

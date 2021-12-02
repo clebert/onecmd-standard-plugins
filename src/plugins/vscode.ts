@@ -8,13 +8,13 @@ export interface VscodePluginOptions {
 }
 
 const extensionsFile = new ObjectFile({
-  path: '.vscode/extensions.json',
+  path: `.vscode/extensions.json`,
   is: isObject,
   serialize: serializeJson,
 });
 
 const settingsFile = new ObjectFile({
-  path: '.vscode/settings.json',
+  path: `.vscode/settings.json`,
   is: isObject,
   serialize: serializeJson,
 });
@@ -35,7 +35,7 @@ export const vscode = ({
       ),
     })),
 
-    {type: 'ref', path: '.vscode'},
+    {type: `ref`, path: `.vscode`},
   ],
 });
 

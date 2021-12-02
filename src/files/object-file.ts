@@ -24,6 +24,6 @@ export class ObjectFile extends File<object> {
         : {...contentA, ...contentB};
     };
 
-    return {type: 'mod', path, is, update};
+    return {type: `mod`, path, is, update};
   }
 }

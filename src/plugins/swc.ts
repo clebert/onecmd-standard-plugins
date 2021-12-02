@@ -5,7 +5,7 @@ import {serializeJson} from '../serializers/serialize-json';
 import {jest} from './jest';
 
 const configFile = new ObjectFile({
-  path: '.swcrc',
+  path: `.swcrc`,
   is: isObject,
   serialize: serializeJson,
 });
@@ -14,7 +14,7 @@ export const swc = (): Plugin => ({
   setup: () => [
     configFile.new(() => ({jsc: {externalHelpers: true}, sourceMaps: true})),
 
-    jest.configFile.merge(() => ({transform: {'^.+\\.tsx?$': ['@swc/jest']}})),
+    jest.configFile.merge(() => ({transform: {'^.+\\.tsx?$': [`@swc/jest`]}})),
   ],
 });
 

@@ -31,7 +31,7 @@ export const vscode = ({
           ...exclude,
           [path]: !showFilesInEditor && !visible,
         }),
-        {'**/.DS_Store': true, '**/.git': true} as Record<string, boolean>
+        {'**/.DS_Store': true, '**/.git': true} as Record<string, boolean>,
       ),
     })),
 

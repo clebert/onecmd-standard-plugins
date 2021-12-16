@@ -36,7 +36,7 @@ export const editorconfig = (): Plugin => ({
           `indent_size = unset`,
           `indent_style = unset`,
           `insert_final_newline = unset`,
-          `trim_trailing_whitespace = unset`
+          `trim_trailing_whitespace = unset`,
         );
       }
 

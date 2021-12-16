@@ -9,7 +9,7 @@ export type MergeOptions =
 export class ObjectFile extends File<object> {
   merge(
     create: (content: object, otherFiles: Files) => object,
-    options: MergeOptions = {deep: true}
+    options: MergeOptions = {deep: true},
   ): ModFile<object> {
     const {path, is} = this.init;
 

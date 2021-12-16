@@ -30,12 +30,13 @@ export const prettier = (): Plugin => ({
       proseWrap: `always`,
       quoteProps: `consistent`,
       singleQuote: true,
+      trailingComma: `all`,
     })),
 
     ignoreFile.new((otherFiles) =>
       Object.entries(otherFiles)
         .filter(([, {pretty}]) => !pretty)
-        .map(([path]) => path)
+        .map(([path]) => path),
     ),
 
     editorconfig.configFile.append(() => [

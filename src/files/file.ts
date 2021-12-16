@@ -10,7 +10,7 @@ export class File<TContent> {
   }
 
   override(
-    create: (content: TContent, otherFiles: Files) => TContent
+    create: (content: TContent, otherFiles: Files) => TContent,
   ): ModFile<TContent> {
     const {path, is} = this.init;
 

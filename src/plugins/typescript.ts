@@ -30,7 +30,7 @@ const esmConfigFile = new ObjectFile({
 
 export const typescript = (
   arch: `node` | `web`,
-  dist: `bundle` | `package`
+  dist: `bundle` | `package`,
 ): Plugin => ({
   setup: () => [
     configFile.new(() => ({
@@ -106,7 +106,7 @@ export const typescript = (
           '@typescript-eslint/require-await': `error`,
         },
       }),
-      {deep: true, replaceArrays: true}
+      {deep: true, replaceArrays: true},
     ),
 
     vscode.settingsFile.merge(() => ({

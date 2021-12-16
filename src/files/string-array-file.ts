@@ -3,7 +3,10 @@ import {File} from './file';
 
 export class StringArrayFile extends File<readonly string[]> {
   append(
-    create: (content: readonly string[], otherFiles: Files) => readonly string[]
+    create: (
+      content: readonly string[],
+      otherFiles: Files,
+    ) => readonly string[],
   ): ModFile<readonly string[]> {
     const {path, is} = this.init;
 

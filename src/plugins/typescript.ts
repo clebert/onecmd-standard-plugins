@@ -3,6 +3,7 @@ import type {Plugin} from 'onecmd';
 import {ObjectFile} from '../files/object-file';
 import {isObject} from '../predicates/is-object';
 import {serializeJson} from '../serializers/serialize-json';
+import {babel} from './babel';
 import {eslint} from './eslint';
 import {swc} from './swc';
 import {vscode} from './vscode';
@@ -83,6 +84,8 @@ export const typescript = (
           extends: `./tsconfig.json`,
         }))
       : undefined,
+
+    babel.configFile.merge(() => ({presets: [`@babel/typescript`]})),
 
     eslint.configFile.merge(() => ({
       parser: `@typescript-eslint/parser`,

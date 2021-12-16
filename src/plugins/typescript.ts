@@ -65,7 +65,7 @@ export const typescript = (
 
         // Language and Environment
         lib: arch === `node` ? [target] : [`dom`, target],
-        target: target,
+        target,
       },
       include: [`src/**/*.ts`, `src/**/*.tsx`, `*.js`],
     })),

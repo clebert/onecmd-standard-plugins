@@ -117,7 +117,7 @@ export const typescript = (
     })),
 
     swc.configFile.merge(() => ({
-      jsc: {parser: {syntax: `typescript`, tsx: true}, target},
+      jsc: {parser: {syntax: `typescript`}, target},
     })),
 
     dist === `package` ? {type: `ref`, path: `lib`} : undefined,

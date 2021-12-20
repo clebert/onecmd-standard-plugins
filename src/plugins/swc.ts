@@ -13,7 +13,6 @@ const configFile = new ObjectFile({
 export const swc = (): Plugin => ({
   setup: () => [
     configFile.new(() => ({jsc: {externalHelpers: true}, sourceMaps: true})),
-
     jest.configFile.merge(() => ({transform: {'^.+\\.tsx?$': [`@swc/jest`]}})),
   ],
 });

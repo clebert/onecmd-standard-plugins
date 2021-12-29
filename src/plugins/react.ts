@@ -6,7 +6,11 @@ import {typescript} from './typescript';
 export const react = (): Plugin => ({
   setup: () => [
     babel.configFile.merge(() => ({presets: [`@babel/react`]})),
-    typescript.configFile.merge(() => ({compilerOptions: {jsx: `react`}})),
+
+    typescript.configFile.merge(() => ({
+      compilerOptions: {jsx: `react`},
+      include: [`src/**/*.tsx`],
+    })),
 
     swc.configFile.merge((_, otherFiles) => {
       return otherFiles[typescript.configFile.init.path]

@@ -56,6 +56,7 @@ export const typescript = (
 
         // Emit
         declaration: dist === `package`,
+        importHelpers: dist === `bundle`,
         importsNotUsedAsValues: `error`,
         sourceMap: dist === `bundle`,
 
@@ -68,7 +69,7 @@ export const typescript = (
         lib: arch === `node` ? [target] : [`dom`, target],
         target,
       },
-      include: [`src/**/*.ts`, `src/**/*.tsx`, `*.js`],
+      include: [`src/**/*.ts`, `*.js`],
     })),
 
     dist === `package`

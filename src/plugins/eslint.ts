@@ -23,6 +23,7 @@ const ignoreFile = new StringArrayFile({
 export const eslint = (): Plugin => ({
   setup: () => [
     configFile.new(() => ({
+      root: true,
       plugins: [`eslint-plugin-import`],
       rules: {
         'complexity': `error`,
@@ -61,7 +62,13 @@ export const eslint = (): Plugin => ({
   lint: ({fix}) => [
     {
       command: resolve(dirname(require.resolve(`eslint`)), `../bin/eslint.js`),
-      args: [`**/*.{js,jsx,ts,tsx}`, fix ? `--fix` : undefined],
+
+      args: [
+        `.`,
+        `--ext`,
+        `.js,.jsx,.ts,.tsx,.svelte`,
+        fix ? `--fix` : undefined,
+      ],
     },
   ],
 });

@@ -22,6 +22,23 @@ const ignoreFile = new StringArrayFile({
   serialize: serializeLines,
 });
 
+interface Language {
+  readonly extension: string;
+  readonly identifier: string;
+}
+
+const languages: readonly Language[] = [
+  {identifier: `css`, extension: `css`},
+  {identifier: `html`, extension: `html`},
+  {identifier: `javascript`, extension: `js`},
+  {identifier: `javascriptreact`, extension: `jsx`},
+  {identifier: `json`, extension: `json`},
+  {identifier: `svelte`, extension: `svelte`},
+  {identifier: `typescript`, extension: `ts`},
+  {identifier: `typescriptreact`, extension: `tsx`},
+  {identifier: `yaml`, extension: `yml`},
+];
+
 export const prettier = (): Plugin => ({
   setup: () => [
     configFile.new(() => ({
@@ -40,7 +57,7 @@ export const prettier = (): Plugin => ({
     ),
 
     editorconfig.configFile.append(() => [
-      `[*.{html,js,json,md,ts,tsx,yml}]`,
+      `[*.{${languages.map(({extension}) => extension).join(`,`)}}]`,
       `charset = unset`,
       `end_of_line = unset`,
       `indent_size = unset`,
@@ -56,7 +73,13 @@ export const prettier = (): Plugin => ({
     })),
 
     vscode.settingsFile.merge(() => ({
-      'editor.defaultFormatter': `esbenp.prettier-vscode`,
+      ...languages.reduce<Record<string, object>>((settings, {identifier}) => {
+        settings[`[${identifier}]`] = {
+          'editor.defaultFormatter': `esbenp.prettier-vscode`,
+        };
+
+        return settings;
+      }, {}),
       'editor.formatOnSave': true,
     })),
   ],
@@ -66,8 +89,8 @@ export const prettier = (): Plugin => ({
       command: resolve(dirname(require.resolve(`prettier`)), `bin-prettier.js`),
 
       args: [
-        check ? `--list-different` : `--write`,
-        `**/*.{html,js,json,md,ts,tsx,yml}`,
+        check ? `--check` : `--write`,
+        `**/*.{${languages.map(({extension}) => extension).join(`,`)}}`,
       ],
     },
   ],

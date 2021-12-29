@@ -6,6 +6,7 @@ export const preact = (): Plugin => ({
   setup: () => [
     typescript.configFile.merge(() => ({
       compilerOptions: {jsx: `react-jsx`, jsxImportSource: `preact`},
+      include: [`src/**/*.tsx`],
     })),
 
     swc.configFile.merge((_, otherFiles) => {
